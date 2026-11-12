@@ -196,10 +196,10 @@
   setInterval(() => { if (unlocked && tab === 'runde') renderRunde(); }, 1000);
 
   /* ---------- Klasse ---------- */
-  function renderKlasse() {
+  function renderKlasse(force) {
     const kids = Object.values(T.kids).sort((a, b) => (a.label || a.name).localeCompare(b.label || b.name));
     const onl = new Set((live.players || []).filter(p => p.online).map(p => p.id));
-    $('#tab-klasse').innerHTML = `<div class="card"><h3>Klasse (${kids.length})</h3>
+    const html = `<div class="card"><h3>Klasse (${kids.length})</h3>
       <p class="muted small">Die Namen stehen nur auf diesem Gerät. Auf der Tafel und den iPads erscheinen nur die Pseudonyme.</p>
       <div style="overflow:auto"><table class="tbl"><tr><th>Name</th><th>Pseudonym</th><th>Stufen</th><th>Auffällig</th><th>Zuletzt</th><th></th></tr>
       ${kids.map(k => {
@@ -211,6 +211,11 @@
           <td><button class="btn small" data-kid="${k.id}">⚙</button></td></tr>`;
       }).join('')}</table></div>
       ${kids.length ? '' : '<p class="muted">Sobald sich ein iPad verbindet, erscheint hier das Kind.</p>'}</div>`;
+    // Nicht neu zeichnen, solange jemand tippt oder nichts neu ist (sonst springt die Eingabe weg)
+    const box = $('#tab-klasse'), ae = document.activeElement;
+    if (!force && ae && box.contains(ae) && ae.tagName === 'INPUT') return;
+    if (box.dataset.sig === html) return;
+    box.dataset.sig = html; box.innerHTML = html;
   }
   $('#tab-klasse').addEventListener('input', e => {
     const id = e.target.dataset && e.target.dataset.label; if (!id || !T.kids[id]) return;
@@ -370,7 +375,7 @@
     tab = t;
     document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === t));
     ['runde', 'klasse', 'sicherung', 'hilfe'].forEach(x => $('#tab-' + x).classList.toggle('hidden', x !== t));
-    if (t === 'klasse') renderKlasse(); if (t === 'sicherung') backupInfo(); if (t === 'runde') renderRunde();
+    if (t === 'klasse') renderKlasse(true); if (t === 'sicherung') backupInfo(); if (t === 'runde') renderRunde();
   }
   document.querySelector('.tabs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setTab(b.dataset.tab); });
   let toastT = null;
