@@ -68,6 +68,18 @@
     }
     if (T.tafel) connect(); else renderBar();
   }
+  const tafelUrl = new URL('tafel.html' + MR.netQuery, location.href).href;
+  const schuelerUrl = new URL('schueler.html' + MR.netQuery, location.href).href;
+  $('#tafelUrl').textContent = tafelUrl; $('#tafelLink').href = tafelUrl;
+  $('#copyUrl').onclick = async () => {
+    try { await navigator.clipboard.writeText(tafelUrl); toast('Adresse kopiert'); } catch (e) { toast('Bitte die Adresse von Hand abschreiben'); }
+  };
+  $('#pairIn').addEventListener('input', e => {
+    let v = e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 10);
+    if (v.length > 4) v = v.slice(0, 4) + '-' + v.slice(4);
+    e.target.value = v;
+  });
+  $('#pairIn').addEventListener('keydown', e => { if (e.key === 'Enter') $('#pairGo').click(); });
   $('#pairGo').onclick = () => {
     const c = parseCode($('#pairIn').value);
     if (!c) { $('#pairMsg').textContent = 'Der Code besteht aus 4 + 6 Buchstaben.'; return; }
@@ -145,7 +157,7 @@
     if (!unlocked) return;
     const phaseNames = { lobby: 'Lobby', run: 'Runde läuft', wrap: 'Letzte Aufgaben', end: 'Runde zu Ende' };
     const g = live.goal || {};
-    let line = authed ? (phaseNames[live.ph] || live.ph) : 'Noch nicht mit der Tafel verbunden';
+    let line = authed ? (phaseNames[live.ph] || live.ph) : 'Zuerst mit der Tafel koppeln (Schritt 1 oben). Dann kann die Runde gestartet werden.';
     if (authed && live.ph === 'run') line += ' · noch ' + MR.fmtTime(live.left - (Date.now() - liveAt)) + (live.mode === 'koop' && g.target ? ' · Klassenziel ' + Math.round(g.prog / g.target * 100) + ' %' : '');
     $('#phaseLine').textContent = line;
     ['btnStart', 'btnStop', 'btnLobby'].forEach(id => { $('#' + id).disabled = !authed; });
@@ -169,7 +181,7 @@
         <div class="lv">${lv}</div>
         <div class="row"><button class="btn small" data-kid="${p.id}">⚙ Einstellungen</button><button class="btn small" data-hint="${p.id}">💡 Hilfe zeigen</button></div></div>`;
     }).join('') + '</div>';
-    if (!list.length) h += '<p class="muted">Noch keine iPads verbunden.</p>';
+    if (!list.length) h += `<div class="card"><h3 style="margin-top:0">Schritt 2: Kinder verbinden</h3><p>Noch keine iPads verbunden. Die Kinder öffnen auf dem iPad <code>${MR.esc(schuelerUrl)}</code> und scannen den QR-Code an der Tafel (oder tippen den 4-stelligen Code ein). Ab dem zweiten Mal verbindet sich das iPad von selbst.</p></div>`;
     $('#liveBox').innerHTML = h;
   }
   $('#liveBox').addEventListener('click', e => {

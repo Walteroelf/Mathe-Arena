@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
-<link rel="stylesheet" href="css/style.css?v=1">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body class="board theme-jugend">
 <div class="bbar">
@@ -12,19 +12,24 @@
   <div id="modeTag" class="muted"></div>
   <div id="netTag" class="muted small"></div>
   <div class="timer" id="timer"></div>
-  <button class="gear" id="gear" aria-label="Einstellungen">⚙</button>
+  <button class="gear" id="gear" aria-label="Menü">⚙ Menü</button>
 </div>
 <div class="bmain">
   <section class="view" id="vLobby">
     <div style="text-align:center">
       <div id="qrBox"></div>
       <div class="codeBig" id="codeBig">----</div>
-      <div class="muted">QR-Code mit dem iPad scannen oder Code eintippen</div>
+      <div class="muted">Kinder: QR-Code mit dem iPad scannen oder Code eintippen</div>
     </div>
     <div style="max-width:46vw">
       <h2>Dabei sind</h2>
       <div class="chips" id="chips"></div>
       <p class="muted" id="lobHint"></p>
+      <div class="row" style="margin-top:22px">
+        <button class="btn primary big" id="btnPair">👩‍🏫 Lehrer-Gerät koppeln</button>
+        <button class="btn big" id="btnMenu">▶ Runde starten</button>
+      </div>
+      <p class="muted" id="teachLine"></p>
     </div>
   </section>
   <section class="view" id="vRun">
@@ -51,15 +56,27 @@
 
 <div class="overlay hidden" id="ovl">
   <div class="card">
-    <div class="row"><h2 class="grow">Tafel-Einstellungen</h2><button class="btn" id="ovlClose">Schließen</button></div>
+    <div class="row"><h2 class="grow">Menü</h2><button class="btn" id="ovlClose">Schließen</button></div>
     <div class="row"><label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
       <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480" selected>8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
-    <div class="row"><button class="btn good" id="btnStart">Runde starten</button><button class="btn" id="btnStop">Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
+    <div class="row"><button class="btn good big" id="btnStart">▶ Runde starten</button><button class="btn" id="btnStop">■ Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
+    <p class="muted small">Die Runde lässt sich auch bequem vom Lehrer-Gerät aus starten.</p>
     <hr style="border:0;border-top:1px solid var(--line);width:100%">
-    <div><b>Lehrer-Gerät koppeln</b><p class="muted small">Auf dem Lehrer-Gerät die Seite „Lehrer“ öffnen und diesen QR-Code scannen oder den Kopplungscode eintippen. Den Code bitte nicht der Klasse zeigen.</p></div>
+    <div class="row"><button class="btn" id="btnPair2">👩‍🏫 Lehrer-Gerät koppeln</button><span class="small muted" id="teachTag"></span></div>
+    <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="ovlPair">
+  <div class="card">
+    <div class="row"><h2 class="grow">Lehrer-Gerät koppeln</h2><button class="btn" id="pairClose">Schließen</button></div>
+    <ol class="steps">
+      <li>Auf dem Lehrer-Gerät (iPad, Mac oder Windows) diese Seite öffnen:<br><b id="pairUrl"></b></li>
+      <li>Dort den QR-Code scannen <i>oder</i> diesen Code eintippen:</li>
+    </ol>
     <div id="pairQr"></div>
-    <div style="text-align:center"><span class="muted small">Kopplungscode</span><br><b style="font-size:1.8rem;letter-spacing:.15em" id="pairCode">------</b></div>
-    <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button><span class="small muted" id="teachTag"></span></div>
+    <div style="text-align:center"><b style="font-size:2.4rem;letter-spacing:.12em" id="pairCode">------</b></div>
+    <p class="muted small">Diesen Code bitte nicht der Klasse zeigen. Nach dem Koppeln schließt sich dieses Fenster von selbst.</p>
   </div>
 </div>
 
@@ -67,6 +84,6 @@
 <script src="lib/qrcode.js"></script>
 <script src="js/common.js?v=1"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/tafel.js?v=2"></script>
+<script src="js/tafel.js?v=3"></script>
 </body>
 </html>

@@ -86,6 +86,7 @@
           if (teacher && teacher !== conn) { try { teacher.close(); } catch (e) { /* weiter */ } }
           teacher = conn; conn.isTeacher = true;
           send(conn, { k: 'auth', ok: true, room });
+          $('#ovlPair').classList.add('hidden');
           players.forEach(q => { if (q.prof) send(conn, { k: 'prof', id: q.id, profile: q.prof }); });
           send(conn, rosterMsg());
         } else send(conn, { k: 'auth', ok: false });
@@ -191,7 +192,10 @@
   }
   function render() {
     $('#modeTag').textContent = MODE_NAMES[cfg.mode] || '';
-    $('#teachTag').textContent = teacher ? 'Lehrer-Gerät verbunden ✓' : 'Kein Lehrer-Gerät verbunden';
+    const tt = teacher ? 'Lehrer-Gerät verbunden ✓' : 'Noch kein Lehrer-Gerät verbunden';
+    $('#teachTag').textContent = tt; $('#teachLine').textContent = teacher ? tt + ' (Start und Einstellungen dort)' : tt;
+    $('#btnPair').textContent = teacher ? '✓ Lehrer-Gerät verbunden' : '👩‍🏫 Lehrer-Gerät koppeln';
+    $('#btnPair').classList.toggle('primary', !teacher);
     const list = [...players.values()];
     if (phase === 'lobby') {
       setView('vLobby'); $('#timer').textContent = '';
@@ -260,10 +264,20 @@
   }, 300);
 
   /* ---------- Menü ---------- */
-  $('#gear').addEventListener('click', () => {
+  function openMenu() {
     $('#selMode').value = cfg.mode; $('#selDur').value = String(cfg.dur);
-    makePairQR(); $('#ovl').classList.remove('hidden');
-  });
+    $('#ovl').classList.remove('hidden');
+  }
+  function openPair() {
+    $('#ovl').classList.add('hidden');
+    makePairQR(); $('#pairUrl').textContent = new URL('lehrer.html' + MR.netQuery, location.href).href;
+    $('#ovlPair').classList.remove('hidden');
+  }
+  $('#gear').addEventListener('click', openMenu);
+  $('#btnMenu').addEventListener('click', openMenu);
+  $('#btnPair').addEventListener('click', openPair);
+  $('#btnPair2').addEventListener('click', openPair);
+  $('#pairClose').addEventListener('click', () => $('#ovlPair').classList.add('hidden'));
   $('#ovlClose').addEventListener('click', () => $('#ovl').classList.add('hidden'));
   $('#btnStart').addEventListener('click', () => { startRound({ mode: $('#selMode').value, dur: +$('#selDur').value }); $('#ovl').classList.add('hidden'); });
   $('#btnStop').addEventListener('click', () => { stopRound(); $('#ovl').classList.add('hidden'); });

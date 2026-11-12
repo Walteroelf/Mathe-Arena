@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mathe-Arena Lehrer">
 <title>Mathe-Arena · Lehrer</title>
-<link rel="stylesheet" href="css/style.css?v=1">
+<link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body class="teacher theme-jugend">
 
@@ -15,7 +15,7 @@
 
 <div id="app" class="hidden">
   <div class="tbar">
-    <b>Lehrer</b>
+    <a href="index.html" class="small muted" style="text-decoration:none">◀ Start</a> <b>Lehrer</b>
     <span id="chipTafel" class="small"></span>
     <div class="tabs">
       <button data-tab="runde" class="on">Runde</button>
@@ -30,13 +30,18 @@
 
     <section id="tab-runde">
       <div class="card" id="pairCard">
-        <h3>Mit der Tafel koppeln</h3>
-        <p class="muted small">An der Tafel auf ⚙ tippen: Dort steht ein QR-Code und ein Kopplungscode. QR-Code mit der Kamera scannen (öffnet diese Seite) oder den Code hier eintippen.</p>
-        <div class="row">
-          <input id="pairIn" placeholder="ABCD-XYZABC" style="text-transform:uppercase;letter-spacing:.1em;width:14em" autocapitalize="characters" autocomplete="off">
-          <button class="btn primary" id="pairGo">Koppeln</button>
-          <span id="pairMsg" class="small muted"></span>
-        </div>
+        <h2 style="margin-top:0">Schritt 1: Mit der Tafel verbinden</h2>
+        <ol class="steps">
+          <li><b>An der Tafel</b> (oder auf dem Gerät, das die Tafel sein soll) diese Seite öffnen:<br><code id="tafelUrl"></code>
+            <div class="row" style="margin-top:8px"><button class="btn small" id="copyUrl">Adresse kopieren</button><a class="btn small" id="tafelLink" target="_blank" rel="noopener" style="text-decoration:none">Tafel-Seite hier in neuem Tab öffnen (zum Testen)</a></div></li>
+          <li>Dort auf den Knopf <b>„Lehrer-Gerät koppeln“</b> tippen. Es erscheinen ein QR-Code und ein Code.</li>
+          <li>Den Code hier eintippen (oder den QR-Code mit der Kamera scannen):
+            <div class="row" style="margin-top:8px">
+              <input id="pairIn" placeholder="z. B. ABCD-XYZABC" style="text-transform:uppercase;letter-spacing:.1em;width:14em;font-size:1.2rem" autocapitalize="characters" autocomplete="off">
+              <button class="btn primary" id="pairGo">Koppeln</button>
+              <span id="pairMsg" class="small muted"></span>
+            </div></li>
+        </ol>
       </div>
       <div class="card" id="ctlCard">
         <div class="row">
@@ -100,6 +105,6 @@
 <script src="js/net.js?v=1"></script>
 <script src="js/skills.js?v=1"></script>
 <script src="js/engine.js?v=1"></script>
-<script src="js/lehrer.js?v=1"></script>
+<script src="js/lehrer.js?v=2"></script>
 </body>
 </html>

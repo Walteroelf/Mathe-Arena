@@ -112,7 +112,7 @@ body.student{ display:flex; flex-direction:column; height:100dvh; overflow:hidde
 body.board{ height:100dvh; overflow:hidden; display:flex; flex-direction:column; cursor:default; }
 .bbar{ display:flex; align-items:center; gap:22px; padding:10px 26px; background:var(--panel); border-bottom:1px solid var(--line); font-size:1.2rem; }
 .bbar .timer{ margin-left:auto; font-size:2.4rem; font-weight:800; font-variant-numeric:tabular-nums; }
-.bbar .gear{ background:transparent; border:0; font-size:1.6rem; opacity:.4; }
+.bbar .gear{ background:var(--panel2); border:2px solid var(--line); border-radius:12px; padding:6px 14px; font-size:1.1rem; font-weight:700; }
 .bmain{ flex:1; min-height:0; position:relative; }
 .view{ position:absolute; inset:0; padding:24px 32px; display:none; }
 .view.on{ display:flex; }
@@ -167,3 +167,8 @@ table.tbl th,table.tbl td{ text-align:left; padding:8px 10px; border-bottom:1px 
 .field{ display:grid; grid-template-columns:150px 1fr; gap:10px; align-items:center; }
 .banner{ background:color-mix(in srgb,var(--warn) 20%,var(--panel)); border:2px solid var(--warn); border-radius:14px; padding:10px 14px; }
 @media (max-width:640px){ .field{ grid-template-columns:1fr; } }
+
+.btn.big{ font-size:1.35rem; padding:16px 26px; min-height:64px; }
+.steps{ margin:0; padding-left:1.3em; display:flex; flex-direction:column; gap:10px; }
+code{ background:var(--panel2); border-radius:8px; padding:2px 8px; word-break:break-all; }
+a.btn{ color:inherit; text-decoration:none; display:inline-flex; align-items:center; }
