@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe-Arena">
+<meta name="theme-color" content="#0e1320">
+<title>Mathe-Arena · iPad</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body class="student theme-jugend">
+<div class="topbar" id="topbar">
+  <span class="name" id="tbName">Mathe-Arena</span>
+  <span class="small muted" id="tbConn"></span>
+  <span class="pts" id="tbPts"></span>
+  <button class="btn small" id="gearBtn" aria-label="Einstellungen, 1 Sekunde gedrückt halten">⚙</button>
+</div>
+<div class="timebar" id="timebar" style="display:none"><i id="timefill"></i></div>
+
+<section class="screen center" id="scSetup">
+  <h1>Wer bist du?</h1>
+  <p class="muted">Wähle einen Namen. Dein echter Name wird hier nie gebraucht.</p>
+  <div class="seg" id="themeSeg"></div>
+  <div class="names" id="nameGrid"></div>
+  <div class="row">
+    <button class="btn" id="moreNames">Andere Vorschläge</button>
+    <button class="btn small" id="restoreBtn">Ich hatte schon ein Profil</button>
+  </div>
+</section>
+
+<section class="screen center" id="scRoom">
+  <h1>Mit der Tafel verbinden</h1>
+  <p class="muted">QR-Code an der Tafel scannen oder den Code eintippen.</p>
+  <input id="roomIn" maxlength="4" autocapitalize="characters" autocomplete="off" style="font-size:2.4rem;text-align:center;width:9em;letter-spacing:.2em;text-transform:uppercase">
+  <div class="row">
+    <button class="btn primary" id="roomGo">Verbinden</button>
+    <button class="btn" id="soloGo">Allein üben</button>
+  </div>
+</section>
+
+<section class="screen center" id="scLobby">
+  <h1 id="lobHello">Hallo</h1>
+  <p id="lobStatus" class="muted"></p>
+  <div class="row">
+    <button class="btn primary" id="lobSolo">Allein üben</button>
+    <button class="btn" id="lobRoom">Verbindung ändern</button>
+  </div>
+</section>
+
+<section class="screen" id="scPlay">
+  <div class="stage" id="stage"></div>
+  <div class="bottombar" id="bottombar"></div>
+</section>
+
+<section class="screen center" id="scEnd">
+  <h1>Runde geschafft</h1>
+  <div id="endText" style="font-size:1.4rem;line-height:1.6"></div>
+  <button class="btn primary" id="endOk">Weiter</button>
+</section>
+
+<div class="settings hidden" id="settings"></div>
+
+<script src="lib/peerjs.min.js"></script>
+<script src="js/common.js?v=1"></script>
+<script src="js/net.js?v=1"></script>
+<script src="js/skills.js?v=1"></script>
+<script src="js/engine.js?v=1"></script>
+<script src="js/input.js?v=1"></script>
+<script src="js/schueler.js?v=1"></script>
+</body>
+</html>

@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mathe-Arena · Tafel</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body class="board theme-jugend">
+<div class="bbar">
+  <div>Raum <b id="roomTag">----</b></div>
+  <div id="modeTag" class="muted"></div>
+  <div id="netTag" class="muted small"></div>
+  <div class="timer" id="timer"></div>
+  <button class="gear" id="gear" aria-label="Einstellungen">⚙</button>
+</div>
+<div class="bmain">
+  <section class="view" id="vLobby">
+    <div style="text-align:center">
+      <div id="qrBox"></div>
+      <div class="codeBig" id="codeBig">----</div>
+      <div class="muted">QR-Code mit dem iPad scannen oder Code eintippen</div>
+    </div>
+    <div style="max-width:46vw">
+      <h2>Dabei sind</h2>
+      <div class="chips" id="chips"></div>
+      <p class="muted" id="lobHint"></p>
+    </div>
+  </section>
+  <section class="view" id="vRun">
+    <div id="trackBox">
+      <svg id="track" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet">
+        <path id="trackBg" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--panel2)" stroke-width="64" stroke-linejoin="round"/>
+        <path id="trackLine" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="14 14"/>
+        <path id="trackFill" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--accent)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>
+        <rect x="224" y="28" width="12" height="64" fill="#fff" opacity=".9"/>
+        <g id="car"><circle r="26" fill="#fff"/><circle r="18" fill="var(--accent2)"/><text y="9" text-anchor="middle" font-size="26" fill="#fff">🏁</text></g>
+      </svg>
+      <div id="pct"><b id="pctNum">0 %</b><span id="pctSub"></span></div>
+    </div>
+    <div id="lanes" class="hidden"></div>
+    <div id="ticker"></div>
+  </section>
+  <section class="view" id="vEnd">
+    <h1 id="endHead">Geschafft!</h1>
+    <div class="muted" id="endSub" style="font-size:1.6rem"></div>
+    <div class="titles" id="titles"></div>
+    <div class="chips" id="endChips"></div>
+  </section>
+</div>
+
+<div class="overlay hidden" id="ovl">
+  <div class="card">
+    <div class="row"><h2 class="grow">Tafel-Einstellungen</h2><button class="btn" id="ovlClose">Schließen</button></div>
+    <div class="row"><label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
+      <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480" selected>8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
+    <div class="row"><button class="btn good" id="btnStart">Runde starten</button><button class="btn" id="btnStop">Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
+    <hr style="border:0;border-top:1px solid var(--line);width:100%">
+    <div><b>Lehrer-Gerät koppeln</b><p class="muted small">Auf dem Lehrer-Gerät die Seite „Lehrer“ öffnen und diesen QR-Code scannen oder den Kopplungscode eintippen. Den Code bitte nicht der Klasse zeigen.</p></div>
+    <div id="pairQr"></div>
+    <div style="text-align:center"><span class="muted small">Kopplungscode</span><br><b style="font-size:1.8rem;letter-spacing:.15em" id="pairCode">------</b></div>
+    <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button><span class="small muted" id="teachTag"></span></div>
+  </div>
+</div>
+
+<script src="lib/peerjs.min.js"></script>
+<script src="lib/qrcode.js"></script>
+<script src="js/common.js?v=1"></script>
+<script src="js/net.js?v=1"></script>
+<script src="js/tafel.js?v=2"></script>
+</body>
+</html>

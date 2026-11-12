@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Mathe-Arena</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body class="theme-jugend">
+<div class="home">
+  <h1>Mathe-Arena</h1>
+  <p class="muted">Jedes Kind rechnet auf seinem Niveau, die Tafel zeigt das gemeinsame Spiel. Die App lernt mit, was jedes Kind kann.</p>
+  <div class="tiles">
+    <a class="tile" id="lTafel" href="tafel.html"><div class="ic">📺</div><h2>Tafel</h2><div class="muted">Auf der digitalen Tafel öffnen. Zeigt QR-Code, Klassenziel und Ergebnisse.</div></a>
+    <a class="tile" id="lLehrer" href="lehrer.html"><div class="ic">🧑‍🏫</div><h2>Lehrer</h2><div class="muted">Auf iPad oder Rechner. Runde starten, Ampel, Einstellungen, Sicherung.</div></a>
+    <a class="tile" id="lSchueler" href="schueler.html"><div class="ic">📱</div><h2>Schüler-iPad</h2><div class="muted">Aufgaben lösen mit Tippen, Taster oder Blick.</div></a>
+  </div>
+  <p class="small muted">Datenschutz: Auf der Tafel und den iPads gibt es nur Pseudonyme. Echte Namen stehen nur auf dem Lehrer-Gerät. Es gibt keine Konten und keinen Cloud-Speicher. Details in der README.</p>
+  <p class="small muted">Testbetrieb ohne Internet (alle Seiten im selben Browser): <a id="lTest" href="tafel.html?net=bc">Tafel mit ?net=bc öffnen</a>, danach Lehrer und Schüler ebenfalls mit <code>?net=bc</code>.</p>
+  <p class="small muted">Version <span id="ver"></span></p>
+</div>
+<script src="js/common.js?v=1"></script>
+<script>document.getElementById('ver').textContent = MR.VERSION;</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe-Arena Lehrer">
+<title>Mathe-Arena · Lehrer</title>
+<link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body class="teacher theme-jugend">
+
+<div id="gate" class="home" style="max-width:440px"></div>
+
+<div id="app" class="hidden">
+  <div class="tbar">
+    <b>Lehrer</b>
+    <span id="chipTafel" class="small"></span>
+    <div class="tabs">
+      <button data-tab="runde" class="on">Runde</button>
+      <button data-tab="klasse">Klasse</button>
+      <button data-tab="sicherung">Sicherung</button>
+      <button data-tab="hilfe">Hilfe</button>
+    </div>
+    <button class="btn small" id="lockBtn" style="margin-left:auto">🔒 Sperren</button>
+  </div>
+  <div class="tmain">
+    <div id="bannerBox"></div>
+
+    <section id="tab-runde">
+      <div class="card" id="pairCard">
+        <h3>Mit der Tafel koppeln</h3>
+        <p class="muted small">An der Tafel auf ⚙ tippen: Dort steht ein QR-Code und ein Kopplungscode. QR-Code mit der Kamera scannen (öffnet diese Seite) oder den Code hier eintippen.</p>
+        <div class="row">
+          <input id="pairIn" placeholder="ABCD-XYZABC" style="text-transform:uppercase;letter-spacing:.1em;width:14em" autocapitalize="characters" autocomplete="off">
+          <button class="btn primary" id="pairGo">Koppeln</button>
+          <span id="pairMsg" class="small muted"></span>
+        </div>
+      </div>
+      <div class="card" id="ctlCard">
+        <div class="row">
+          <label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
+          <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480">8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label>
+          <button class="btn good" id="btnStart">▶ Start</button>
+          <button class="btn" id="btnStop">■ Beenden</button>
+          <button class="btn small" id="btnLobby">Lobby</button>
+        </div>
+        <div id="phaseLine" class="muted" style="margin-top:8px"></div>
+      </div>
+      <div id="liveBox"></div>
+    </section>
+
+    <section id="tab-klasse" class="hidden"></section>
+
+    <section id="tab-sicherung" class="hidden">
+      <div class="card">
+        <h3>Sicherung</h3>
+        <p id="backInfo" class="muted"></p>
+        <p class="small muted">Die Datei enthält die echten Namen und alle Lernstände. Bitte mit Passwort verschlüsseln und selbst aufbewahren (Dateien-App, USB-Stick, eigener Rechner).</p>
+        <div class="row"><input id="backPw" type="password" placeholder="Passwort (empfohlen)" autocomplete="new-password">
+          <button class="btn primary" id="backExport">Sicherung speichern</button></div>
+      </div>
+      <div class="card">
+        <h3>Sicherung einspielen</h3>
+        <p class="small muted">Zum Beispiel beim Umzug auf ein anderes Lehrer-Gerät. Pro Kind gilt der neuere Stand.</p>
+        <div class="row"><input id="impFile" type="file" accept=".json,application/json"><input id="impPw" type="password" placeholder="Passwort (falls gesetzt)" autocomplete="off">
+          <button class="btn" id="backImport">Einspielen</button></div>
+        <div id="impMsg" class="small" style="margin-top:8px"></div>
+      </div>
+      <div class="card">
+        <h3>PIN</h3>
+        <div class="row"><input id="newPin" type="password" inputmode="numeric" maxlength="6" placeholder="Neue PIN (4–6 Ziffern)" autocomplete="off"><button class="btn" id="setPin">PIN ändern</button><button class="btn danger small" id="noPin">PIN entfernen</button></div>
+      </div>
+    </section>
+
+    <section id="tab-hilfe" class="hidden">
+      <div class="card">
+        <h3>So läuft eine Stunde</h3>
+        <ol>
+          <li>Tafel: Seite „Tafel“ öffnen. Es erscheint ein QR-Code.</li>
+          <li>Dieses Gerät: einmal koppeln (⚙ an der Tafel). Das Gerät merkt sich die Tafel.</li>
+          <li>Kinder: iPad-App öffnen, QR-Code scannen. Ab dem zweiten Mal verbindet sich das iPad von selbst.</li>
+          <li>Hier: Modus und Dauer wählen, Start.</li>
+        </ol>
+        <p class="muted small">Die Ampel: grün läuft, gelb stockt, blau unterfordert oder Aufstieg möglich, rot hat Hilfe angefordert.</p>
+      </div>
+      <div class="card">
+        <h3>Wo liegen die Daten?</h3>
+        <p class="small">Lernstand: auf dem iPad des Kindes (Hauptablage) und als Kopie hier. Echte Namen: nur hier auf diesem Gerät. Die Tafel zeigt nur Pseudonyme und speichert nichts. Dieses Gerät ist für die Klasse „zuständig“: Bitte immer dasselbe Gerät benutzen oder Sicherungen einspielen.</p>
+      </div>
+    </section>
+  </div>
+</div>
+
+<div id="modal" class="modal hidden"></div>
+
+<script src="lib/peerjs.min.js"></script>
+<script src="js/common.js?v=1"></script>
+<script src="js/net.js?v=1"></script>
+<script src="js/skills.js?v=1"></script>
+<script src="js/engine.js?v=1"></script>
+<script src="js/lehrer.js?v=1"></script>
+</body>
+</html>
