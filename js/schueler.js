@@ -8,6 +8,7 @@
   let link = null, room = '', linkOpen = false, waitRestore = false;
   const sess = newSess();
   let task = null, locked = true, cleanup = [], lastAction = performance.now(), helpFlag = false, sinceProf = 0;
+  let traceHint = null;
   let settingsOpen = false, nameTheme = 'jugend', toastT = null;
 
   function newSess() {
@@ -128,7 +129,7 @@
     if (!link || !link.open || !P) return;
     link.send({
       k: 'stat', id: P.id, phase: sess.phase, input: P.cfg.input,
-      task: task ? (task.strand === 's0' ? 'Stufe 0' : (task.strand === 'mengen' ? 'Menge' : task.q)) : '',
+      task: task ? ({ s0: 'Stufe 0', mengen: 'Menge', tippen: 'Zählen und Tippen', spuren: 'Zahl ' + (task.text || '') + ' nachspuren' }[task.strand] || task.q) : '',
       strand: task ? task.strand : '', level: task ? task.level : 0,
       streak: sess.streak, errRun: task ? (P.skills[task.strand] || {}).errRun || 0 : 0,
       idle: Math.round(performance.now() - lastAction), help: helpFlag, pts: sess.pts, ok: sess.ok, tot: sess.tot
@@ -260,6 +261,8 @@
     locked = false; lastAction = performance.now();
     const st = $('#stage'); st.className = 'stage';
     if (t.strand === 's0') { renderS0(t); buildBottom(); return; }
+    if (t.kind === 'tapcount') { t.mode = 'tap'; renderTapCount(t); buildBottom(); return; }
+    if (t.kind === 'trace') { t.mode = 'tap'; renderTrace(t); buildBottom(); return; }
     t.mode = E.answerMode(P, t, false);
     const vis = t.strand === 'mengen' ? MR.dotsSVG(t.visual.n, t.visual.layout, t.visual.pos) : '';
     const qtxt = t.strand === 'mengen' ? 'Wie viele?' : MR.esc(t.q) + ' = ?';
@@ -342,6 +345,8 @@
   function showHintBox() {
     if (!task || task.strand === 's0') return;
     task.hinted = true;
+    if (task.kind === 'trace') { if (traceHint) traceHint(); return; }
+    if (task.kind === 'tapcount') { const h = $('#tcHint'); if (h) h.textContent = 'Zeige auf ein Ding und tippe einmal. Dann das nächste.'; return; }
     const hb = $('#hintBox'); if (hb) hb.innerHTML = MR.hintHTML(task);
   }
 
@@ -351,7 +356,7 @@
     let h = '';
     if (P.cfg.hints && task && task.strand !== 's0') h += '<button class="btn" id="bHint">💡 Hilfe</button>';
     h += '<button class="btn" id="bHelp">✋ Lehrkraft</button>';
-    if (sess.solo) h += '<button class="btn" id="bDone">Fertig</button>';
+    if (sess.solo) h += '<button class="btn" id="bDone">Üben beenden</button>';
     b.innerHTML = h;
     const q = id => b.querySelector(id);
     if (q('#bHint')) q('#bHint').onclick = () => { showHintBox(); lastAction = performance.now(); };
@@ -392,13 +397,111 @@
     const say = $('#say'); if (say) say.textContent = MR.pick(PRAISE);
     finishTask(t, res, true);
   }
+  const COIN = '<svg class="coin" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#ffd200" stroke="#c76f0a" stroke-width="6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#c76f0a" stroke-width="4"/><text x="50" y="63" text-anchor="middle" font-size="38" font-weight="700" fill="#c76f0a">€</text></svg>';
+  const BAG = '<svg class="bag" viewBox="0 0 120 120"><path d="M36 40 L84 40 Q114 72 100 102 Q60 118 20 102 Q6 72 36 40Z" fill="#f39325" stroke="#c76f0a" stroke-width="5"/><path d="M38 40 Q60 22 82 40" fill="none" stroke="#c76f0a" stroke-width="6" stroke-linecap="round"/><text x="60" y="90" text-anchor="middle" font-size="34" font-weight="700" fill="#1d3a5c">€</text></svg>';
+
+  /* ---------- Zählen und Tippen ---------- */
+  function renderTapCount(t) {
+    const st = $('#stage');
+    const items = t.pos.map((p, i) => `<g class="tcItem"><circle cx="${p.x}" cy="${p.y}" r="8.5"/><text x="${p.x}" y="${p.y + 3.6}" text-anchor="middle"></text></g>`).join('');
+    st.innerHTML = `<div class="tc"><div class="say" id="say">${MR.esc(t.q)}</div><div class="tcItems"><svg viewBox="0 0 100 ${t.n > 5 ? 66 : 62}" class="tcSvg">${items}</svg></div><div class="tcNum" id="tcNum">0</div><div class="muted" id="tcHint" style="min-height:1.4em"></div>${t.confirm ? '<button class="btn good huge" id="tcDone">✓ Fertig</button>' : ''}</div>`;
+    if (P.cfg.speak) speak(t.speak);
+    const els = [...st.querySelectorAll('.tcItem')];
+    let taps = 0, done = false;
+    const mark = i => { const it = els[i]; if (it) { it.classList.add('on'); it.querySelector('text').textContent = i + 1; } };
+    const finish = ok => {
+      if (locked || done) return; done = true; locked = true;
+      if (!ok) { els.forEach((_, i) => mark(i)); $('#tcHint').textContent = 'Es sind ' + t.n + '.'; }
+      const res = E.record(P, t, { ok, ms: 0, hinted: !!t.hinted, streak: ok ? sess.streak + 1 : 0 });
+      finishTask(t, res, ok);
+    };
+    const onTap = e => {
+      if (locked || done) return;
+      if (e.target.closest && e.target.closest('#tcDone')) return;
+      taps++; lastAction = performance.now(); $('#tcNum').textContent = taps; sfx.pop();
+      if (P.cfg.speak) speak(String(taps));
+      if (taps <= t.n) mark(taps - 1);
+      if (!t.confirm && taps === t.n) { done = true; setTimeout(() => { done = false; finish(true); }, 700); }
+    };
+    st.addEventListener('pointerdown', onTap); cleanup.push(() => st.removeEventListener('pointerdown', onTap));
+    if (t.confirm) $('#tcDone').onclick = () => { if (!locked && taps) finish(taps === t.n); };
+  }
+
+  /* ---------- Zahlen nachspuren ---------- */
+  function renderTrace(t) {
+    const st = $('#stage'), digits = t.text.split('');
+    const GW = digits.length * 100 + (digits.length - 1) * 22, GH = 140;
+    st.innerHTML = `<div class="tr"><div class="say" id="say">${MR.esc(t.q)}</div><div class="trWrap"><canvas id="trc" style="aspect-ratio:${GW}/${GH};width:min(90vw,calc(52vh*${(GW / GH).toFixed(3)}))"></canvas></div><button class="btn" id="trAgain">↺ Nochmal</button></div>`;
+    if (P.cfg.speak) speak(t.speak);
+    const cv = $('#trc'), ctx = cv.getContext('2d');
+    const strokes = [];     // { pts:[[x,y]], first:[x,y], label }
+    digits.forEach((d, di) => MR.DIGITS[d].forEach((stk, si, arr) => strokes.push({ pts: stk.map(([x, y]) => [x + di * 122, y]), label: arr.length > 1 ? String(si + 1) : '' })));
+    const guide = [];       // Messpunkte entlang der Spur
+    strokes.forEach(sk => {
+      for (let i = 0; i < sk.pts.length - 1; i++) {
+        const [x0, y0] = sk.pts[i], [x1, y1] = sk.pts[i + 1], len = Math.hypot(x1 - x0, y1 - y0), n = Math.max(1, Math.round(len / 4));
+        for (let k = 0; k < n; k++) guide.push({ x: x0 + (x1 - x0) * k / n, y: y0 + (y1 - y0) * k / n, on: false });
+      }
+      const L = sk.pts[sk.pts.length - 1]; guide.push({ x: L[0], y: L[1], on: false });
+    });
+    let ink = [], cur = null, samples = 0, off = 0, hintAt = 0, alive = true, dirty = true, drawing = false;
+    const css = n => getComputedStyle(document.body).getPropertyValue(n).trim() || '#888';
+    function size() {
+      const r = cv.getBoundingClientRect(), dpr = window.devicePixelRatio || 1;
+      const w = r.width > 10 ? r.width : 480; cv.width = Math.round(w * dpr); cv.height = Math.round(w * GH / GW * dpr); dirty = true;
+    }
+    size();
+    function draw() {
+      const k = cv.width / GW; ctx.clearRect(0, 0, cv.width, cv.height); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = css('--line'); ctx.lineWidth = 28 * k;                                   // ausgesparte Spur
+      strokes.forEach(sk => { ctx.beginPath(); sk.pts.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke(); });
+      ctx.fillStyle = css('--gruen'); guide.forEach(g => { if (g.on) { ctx.beginPath(); ctx.arc(g.x * k, g.y * k, 14 * k, 0, 7); ctx.fill(); } });
+      ctx.setLineDash([5 * k, 9 * k]); ctx.strokeStyle = css('--muted'); ctx.lineWidth = 2 * k;   // gepunktete Mitte
+      strokes.forEach(sk => { ctx.beginPath(); sk.pts.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke(); });
+      ctx.setLineDash([]);
+      ctx.strokeStyle = css('--accent'); ctx.lineWidth = 8 * k;                                   // eigene Linie
+      ink.forEach(l => { ctx.beginPath(); l.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke(); if (l.length === 1) { ctx.fillStyle = css('--accent'); ctx.beginPath(); ctx.arc(l[0][0] * k, l[0][1] * k, 4 * k, 0, 7); ctx.fill(); } });
+      strokes.forEach(sk => {                                                                       // Startpunkte
+        const [x, y] = sk.pts[0]; ctx.fillStyle = css('--orange'); ctx.beginPath(); ctx.arc(x * k, y * k, 11 * k, 0, 7); ctx.fill();
+        ctx.fillStyle = '#1d3a5c'; ctx.font = `700 ${14 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(sk.label || '▶', x * k, y * k + 1 * k);
+      });
+      if (hintAt && performance.now() - hintAt < 4000) {                                             // Hilfe: wandernder Punkt
+        const f = ((performance.now() - hintAt) % 2000) / 2000, g = guide[Math.min(guide.length - 1, Math.floor(f * guide.length))];
+        ctx.fillStyle = css('--gelb'); ctx.strokeStyle = '#1d3a5c'; ctx.lineWidth = 3 * k; ctx.beginPath(); ctx.arc(g.x * k, g.y * k, 12 * k, 0, 7); ctx.fill(); ctx.stroke();
+      }
+    }
+    (function loop() { if (!alive) return; if (dirty || (hintAt && performance.now() - hintAt < 4200)) { draw(); dirty = false; } requestAnimationFrame(loop); })();
+    const pos = e => { const r = cv.getBoundingClientRect(); return [(e.clientX - r.left) / r.width * GW, (e.clientY - r.top) / r.height * GH]; };
+    function touch(x, y) {
+      let best = 1e9;
+      guide.forEach(g => { const d = Math.hypot(g.x - x, g.y - y); if (d < best) best = d; if (d < 15) g.on = true; });
+      samples++; if (best > 26) off++;
+      const cov = guide.filter(g => g.on).length / guide.length;
+      if (cov >= 0.9 && !locked) complete();
+    }
+    function complete() {
+      locked = true; alive = false; guide.forEach(g => { g.on = true; }); draw();
+      const q = Math.max(0, 1 - off / Math.max(1, samples));
+      sfx.ok(); burst(cv.parentElement);
+      const res = E.record(P, t, { ok: true, ms: 0, q, hinted: !!t.hinted, streak: sess.streak + 1 });
+      finishTask(t, res, true);
+    }
+    cv.addEventListener('pointerdown', e => { if (locked) return; e.preventDefault(); try { cv.setPointerCapture(e.pointerId); } catch (_) { /* weiter */ } drawing = true; const [x, y] = pos(e); cur = [[x, y]]; ink.push(cur); lastAction = performance.now(); touch(x, y); dirty = true; });
+    cv.addEventListener('pointermove', e => { if (!drawing || locked) return; const [x, y] = pos(e); cur.push([x, y]); touch(x, y); dirty = true; });
+    ['pointerup', 'pointercancel'].forEach(ev => cv.addEventListener(ev, () => { drawing = false; }));
+    $('#trAgain').onclick = () => { if (locked) return; ink = []; guide.forEach(g => { g.on = false; }); samples = 0; off = 0; dirty = true; };
+    traceHint = () => { hintAt = performance.now(); dirty = true; };
+    cleanup.push(() => { alive = false; traceHint = null; });
+  }
+
   function renderS0(t) {
     const cfg = P.cfg, st = $('#stage');
     const word = cfg.input === 'switch' ? 'Taster' : (cfg.input === 'gaze' ? 'Hierher schauen' : 'Tippen');
     let inner = `<div class="say" id="say">${MR.esc(t.q)}</div>`;
     if (t.kind === 'count') inner += `<div class="numBig">${t.n}</div><div class="slots" id="slots">${'<div class="slot"></div>'.repeat(t.n)}</div>`;
+    if (t.kind === 'collect') inner += `<div class="coinRow" id="coinRow">${COIN.repeat(t.n)}</div>${BAG}`;
     if (t.kind === 'choose2') inner += `<div class="opts n2" id="opts2" style="width:100%;flex:0 0 42vh">${t.shapes.map(s => `<button class="opt">${MR.shapeSVG(s)}</button>`).join('')}</div>`;
-    else inner += `<button class="bigTarget${t.kind === 'react' ? ' calm' : ''}" id="tgt" ${t.kind === 'count' ? 'style="width:min(36vw,26vh)"' : ''}><span id="tgtL">${t.kind === 'react' ? '…' : word}</span></button>`;
+    else inner += `<button class="bigTarget${t.kind === 'react' ? ' calm' : ''}" id="tgt" ${t.kind === 'count' || t.kind === 'collect' ? 'style="width:min(34vw,24vh)"' : ''}><span id="tgtL">${t.kind === 'react' ? '…' : word}</span></button>`;
     st.innerHTML = `<div class="s0">${inner}</div>`;
     if (cfg.speak) speak(t.speak);
     const tgt = $('#tgt');
@@ -409,6 +512,14 @@
       const id = setTimeout(() => { armed = true; tgt.classList.remove('calm'); tgt.classList.add('go'); $('#tgtL').textContent = 'Jetzt!'; sfx.go(); }, t.delay);
       cleanup.push(() => clearTimeout(id));
       bindPress(() => { if (locked || !armed) return; burst(tgt); sfx.pop(); completeS0(t); }, tgt);
+    } else if (t.kind === 'collect') {
+      let c = 0; const coins = [...document.querySelectorAll('.coin')], bag = document.querySelector('.bag');
+      bindPress(() => {
+        if (locked || c >= t.n) return;
+        coins[c].classList.add('gone'); c++; sfx.pop(); burst(tgt); lastAction = performance.now();
+        bag.classList.remove('bump'); void bag.getBoundingClientRect(); bag.classList.add('bump');
+        if (c === t.n) setTimeout(() => completeS0(t), 600);
+      }, tgt);
     } else if (t.kind === 'count') {
       let c = 0; const slots = [...document.querySelectorAll('.slot')];
       bindPress(() => {

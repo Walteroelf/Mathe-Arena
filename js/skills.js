@@ -9,12 +9,28 @@
 
   MR.STRANDS = {
     s0: {
-      id: 's0', name: 'Stufe 0 · Ursache-Wirkung', short: 'S0', manual: true,
+      id: 's0', name: 'Stufe 0 · Taster und Ursache-Wirkung', short: 'S0', manual: true,
       levels: [
         { label: '0a Ursache-Wirkung', desc: 'Ein Druck löst Licht und Ton aus' },
         { label: '0b Reagieren', desc: 'Auf ein Signal warten, dann drücken' },
-        { label: '0c Auswählen', desc: 'Zwischen zwei Dingen wählen' },
-        { label: '0d Zählen mit Taster', desc: 'So oft drücken, wie die Zahl zeigt' }
+        { label: '0c Einsammeln', desc: '2 bis 3 Dinge nacheinander einsammeln, jeder Druck sammelt eines' },
+        { label: '0d Auswählen', desc: 'Zwischen zwei Dingen wählen' },
+        { label: '0e Zählen mit Taster', desc: 'So oft drücken, wie die Zahl zeigt (1 bis 3)' },
+        { label: '0f Zählen bis 5', desc: 'So oft drücken, wie die Zahl zeigt (3 bis 5)' }
+      ]
+    },
+    tippen: {
+      id: 'tippen', name: 'Zählen und Tippen', short: 'Tippen', tapOnly: true,
+      levels: [
+        { label: 'Tippen und mitzählen bis 3' }, { label: 'Tippen und mitzählen bis 5' },
+        { label: 'So oft tippen, wie Dinge da sind (bis 5)' }, { label: 'So oft tippen, wie Dinge da sind (bis 10)' }
+      ]
+    },
+    spuren: {
+      id: 'spuren', name: 'Zahlen nachspuren', short: 'Spuren', tapOnly: true,
+      levels: [
+        { label: 'Zahlen 1 bis 3 nachspuren' }, { label: 'Zahlen 0 bis 5 nachspuren' },
+        { label: 'Zahlen 0 bis 9 nachspuren' }, { label: 'Zweistellige Zahlen nachspuren' }
       ]
     },
     mengen: {
@@ -36,7 +52,7 @@
       ]
     }
   };
-  MR.STRAND_ORDER = ['s0', 'mengen', 'plus', 'minus'];
+  MR.STRAND_ORDER = ['s0', 'tippen', 'spuren', 'mengen', 'plus', 'minus'];
   MR.nLevels = s => MR.STRANDS[s].levels.length;
 
   /* ---------- Mengen ---------- */
@@ -108,13 +124,63 @@
   function genS0(L) {
     if (L === 1) return { kind: 'fx', q: 'Drücke!', speak: 'Drücke!', tags: ['s0'] };
     if (L === 2) return { kind: 'react', q: 'Warte auf das Signal', speak: 'Warte. Wenn es leuchtet, drücke.', delay: R(1500, 4000), tags: ['s0'] };
-    if (L === 3) {
+    if (L === 3) { const n = R(2, 3); return { kind: 'collect', n, q: 'Sammle alles ein', speak: 'Sammle alles ein. Jeder Druck sammelt eins.', tags: ['s0'] }; }
+    if (L === 4) {
       const two = MR.shuffle(SHAPES).slice(0, 2); const target = R(0, 1);
       return { kind: 'choose2', q: 'Wähle ' + two[target].name, speak: 'Wähle ' + two[target].name, shapes: two, target, tags: ['s0'] };
     }
-    const n = R(1, 3);
+    const n = L === 5 ? R(1, 3) : R(3, 5);
     return { kind: 'count', q: 'Drücke ' + n + ' Mal', speak: 'Drücke ' + n + ' Mal', n, tags: ['s0'] };
   }
+
+  /* ---------- Zählen und Tippen: so oft tippen, wie Dinge zu sehen sind ---------- */
+  function itemPositions(n) {
+    const out = [];
+    if (n > 5) { for (let i = 0; i < n; i++) out.push({ x: 12 + (i % 5) * 19, y: 18 + Math.floor(i / 5) * 24 }); return out; }
+    const cols = n <= 3 ? n : (n === 4 ? 2 : 3), rows = Math.ceil(n / cols);
+    for (let i = 0; i < n; i++) {
+      const r = Math.floor(i / cols), c = i % cols, inRow = r === rows - 1 ? n - r * cols : cols;
+      out.push({ x: 50 + (c - (inRow - 1) / 2) * 28, y: 31 + (r - (rows - 1) / 2) * 26 });
+    }
+    return out;
+  }
+  function genTippen(L) {
+    const n = L === 1 ? R(1, 3) : L === 2 ? R(2, 5) : L === 3 ? R(2, 5) : R(4, 10);
+    const confirm = L >= 3;
+    return {
+      kind: 'tapcount', n, confirm, answer: n, pos: itemPositions(n), tags: ['tippen'],
+      q: confirm ? 'Tippe so oft, wie du Dinge siehst' : 'Tippe jedes Ding an und zähle mit',
+      speak: confirm ? 'Tippe so oft, wie du Dinge siehst. Dann tippe auf Fertig.' : 'Tippe jedes Ding an und zähle mit.'
+    };
+  }
+
+  /* ---------- Zahlen nachspuren (Strichform der Ziffern, 100 breit, 140 hoch) ---------- */
+  const A = (cx, cy, rx, ry, a0, a1, n) => {
+    n = n || 20; const out = [];
+    for (let i = 0; i <= n; i++) { const a = (a0 + (a1 - a0) * i / n) * Math.PI / 180; out.push([cx + rx * Math.cos(a), cy + ry * Math.sin(a)]); }
+    return out;
+  };
+  MR.DIGITS = {
+    '0': [A(50, 70, 30, 52, 270, -90, 30)],
+    '1': [[[30, 44], [56, 18], [56, 125]]],
+    '2': [[...A(50, 48, 28, 28, 195, 400, 20), [22, 125], [80, 125]]],
+    '3': [[...A(48, 42, 25, 26, 200, 450, 18), ...A(48, 96, 28, 28, 270, 520, 20)]],
+    '4': [[[62, 15], [18, 92], [84, 92]], [[62, 40], [62, 125]]],
+    '5': [[[76, 18], [32, 18], [29, 68], ...A(46, 94, 32, 30, 235, 510, 26)]],
+    '6': [[[66, 22], [46, 36], [30, 66], [24, 98], ...A(50, 98, 26, 28, 180, 540, 26)]],
+    '7': [[[22, 18], [78, 18], [42, 125]]],
+    '8': [A(50, 42, 24, 24, 270, 630, 26), A(50, 96, 28, 28, 270, 630, 28)],
+    '9': [[...A(50, 44, 26, 26, 0, -360, 26), [76, 46], [70, 92], [48, 125], [26, 116]]]
+  };
+  function genSpuren(L) {
+    let text;
+    if (L === 1) text = String(R(1, 3));
+    else if (L === 2) text = String(R(0, 5));
+    else if (L === 3) text = String(R(0, 9));
+    else text = String(R(10, 20));
+    return { kind: 'trace', text, answer: +text, q: 'Fahre die Zahl nach', speak: 'Fahre die Zahl ' + text + ' nach.', tags: ['spuren'] };
+  }
+  GEN.tippen = genTippen; GEN.spuren = genSpuren;
 
   MR.makeTask = function (strand, level) {
     const t = strand === 's0' ? genS0(level) : GEN[strand](level);

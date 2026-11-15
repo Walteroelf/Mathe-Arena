@@ -9,7 +9,7 @@
 */
 (function (MR) {
   const S = MR.STRANDS;
-  const DEF_START = { s0: 1, mengen: 2, plus: 2, minus: 2 };
+  const DEF_START = { s0: 1, tippen: 1, spuren: 1, mengen: 2, plus: 2, minus: 2 };
 
   function defaultCfg(theme) {
     return {
@@ -47,7 +47,7 @@
   }
 
   function chooseNext(p, sess) {
-    const cfg = p.cfg; let list = cfg.strands.filter(s => S[s]); if (!list.length) list = ['mengen'];
+    const cfg = p.cfg; let list = cfg.strands.filter(s => S[s] && !(S[s].tapOnly && cfg.input !== 'tap')); if (!list.length) list = ['mengen'];
     const now = Date.now();
     const w = list.map(s => {
       const k = p.skills[s];
@@ -98,6 +98,7 @@
       out.ok = true; out.pts = 10;
     } else {
       let r = res.ok ? 1 : 0;
+      if (res.ok && res.q != null && res.q < 0.75) r = 0.6;      // Nachspuren: ungenau
       if (res.ok && res.hinted) r = 0.5;
       else if (res.ok && res.ms > (t.mode === 'type' ? 15000 : 10000)) r = 0.75;
       const K = Math.max(0.35, 0.9 - 0.08 * k.n) * (res.guess ? 0.5 : 1);
@@ -152,8 +153,17 @@
   }
   const TAG_NAMES = {
     zuegang10: 'Zehnerübergang bis 20', zuegang100: 'Übergang bis 100', teen: 'Zahlen 11–19',
-    zweistellig: 'zweistellige Zahlen', bis5: 'bis 5', bis10: 'bis 10', 'mengen-free': 'Mengen erfassen', 'mengen-frame': 'Mengen im Zehnerfeld'
+    zweistellig: 'zweistellige Zahlen', tippen: 'Zählen durch Tippen', spuren: 'Zahlen nachspuren', bis5: 'bis 5', bis10: 'bis 10', 'mengen-free': 'Mengen erfassen', 'mengen-frame': 'Mengen im Zehnerfeld'
   };
 
-  MR.Engine = { defaultCfg, newSkill, newProfile, ensure, chooseNext, answerMode, record, applyOvr, levelSummary, topError, TAG_NAMES };
+  /* Voreinstellungen pro Kind: für Kolleginnen und Kollegen ohne Fachwissen */
+  const PRESETS = {
+    taster: { label: 'Ganz früh · nur Taster (Stufe 0)', cfg: { input: 'switch', strands: ['s0'], focus: '', screenTap: false }, lvls: { s0: 1 } },
+    blick: { label: 'Ganz früh · Blicksteuerung (Stufe 0)', cfg: { input: 'gaze', strands: ['s0'], focus: '', screenTap: false }, lvls: { s0: 1 } },
+    frueh: { label: 'Früh · Zählen, Nachspuren, Mengen (Tippen)', cfg: { input: 'tap', answer: 'choice', choices: 4, strands: ['tippen', 'spuren', 'mengen'], focus: '', screenTap: true }, lvls: { tippen: 1, spuren: 1, mengen: 1 } },
+    plus20: { label: 'Rechnen bis 20', cfg: { input: 'tap', answer: 'auto', choices: 4, strands: ['mengen', 'plus', 'minus'], focus: '', screenTap: true }, lvls: { mengen: 3, plus: 2, minus: 2 } },
+    plus100: { label: 'Rechnen bis 100', cfg: { input: 'tap', answer: 'auto', choices: 4, strands: ['plus', 'minus'], focus: '', screenTap: true }, lvls: { plus: 5, minus: 5 } }
+  };
+
+  MR.Engine = { PRESETS, defaultCfg, newSkill, newProfile, ensure, chooseNext, answerMode, record, applyOvr, levelSummary, topError, TAG_NAMES };
 })(window.MR);

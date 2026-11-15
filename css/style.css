@@ -250,3 +250,21 @@ table.tbl th,table.tbl td{ text-align:left; padding:8px 10px; border-bottom:2px 
 
 #ovlKids .card{ max-width:760px; }
 #kidModal{ z-index:60; }
+
+/* Neue Aufgabenarten: Einsammeln, Zählen und Tippen, Zahlen nachspuren */
+.tc,.tr{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; text-align:center; width:100%; }
+.tc .say,.tr .say{ font-size:clamp(1.4rem,4.5vw,2.2rem); font-weight:700; }
+.tcItems{ width:min(86vw,58vh); }
+.tcSvg{ width:100%; overflow:visible; }
+.tcItem circle{ fill:var(--panel); stroke:var(--rand); stroke-width:2.2; transition:fill .2s; }
+.tcItem text{ font-size:9px; font-weight:700; fill:#fff; font-family:var(--schrift); }
+.tcItem.on circle{ fill:var(--gruen); stroke:var(--gruen); }
+.tcNum{ font-family:var(--anzeige); font-size:clamp(3rem,12vw,6rem); font-weight:900; line-height:1; }
+.coinRow{ display:flex; gap:3vw; justify-content:center; min-height:min(18vw,16vh); }
+.coin{ width:min(18vw,16vh); height:auto; transition:transform .7s ease-in,opacity .7s ease-in; }
+.coin.gone{ transform:translateY(22vh) scale(.15); opacity:0; }
+.bag{ width:min(24vw,20vh); }
+.bag.bump{ animation:bump .35s; }
+@keyframes bump{ 50%{ transform:scale(1.18); } }
+.trWrap{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center; width:100%; }
+#trc{ touch-action:none; background:var(--panel); border:3px solid var(--line); border-radius:var(--radius); max-height:100%; }

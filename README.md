@@ -40,7 +40,7 @@ Spielart, Klassenziel und Dauer stehen unter **⚙ Einstellungen** an der Tafel 
 
 ## Wie die App das Niveau findet
 
-- **Kompetenzstränge** mit Stufen: Stufe 0 (Ursache-Wirkung mit Taster), Mengen erfassen, Plus, Minus (bis 100). Weitere Stränge lassen sich in `js/skills.js` ergänzen (Eintrag in `MR.STRANDS` plus Generator).
+- **Kompetenzstränge** mit Stufen: Stufe 0 (Taster, 6 Stufen), Zählen und Tippen (4), Zahlen nachspuren (4), Mengen erfassen (4), Plus (6) und Minus (6, bis 100). Weitere Stränge lassen sich in `js/skills.js` ergänzen (Eintrag in `MR.STRANDS` plus Generator).
 - **Aufgaben werden erzeugt**, nicht aufgelistet. Jede Stufe hat Parameter wie Zahlenbereich oder Zehnerübergang.
 - **Lernen:** Pro Strang steht ein Wert (zum Beispiel 3,4 = Stufe 3, 40 % bis Stufe 4). Nach jeder Antwort wird er Elo-artig angepasst. Das Gleichgewicht liegt bei etwa 75 % richtig. Am Anfang sind die Schritte groß (das ist die Einstufung), später ruhiger.
 - Richtig, aber nur mit Hilfe oder sehr langsam: kleinerer Zuwachs. Sehr schnelle falsche Antworten (Raten): kleinerer Abzug. Nach zwei Fehlern in Folge kommt eine leichtere Aufgabe mit Auswahlfeldern. Jede fünfte Aufgabe ist eine leichte Erfolgsaufgabe, jede siebte eine freiwillige Herausforderung ohne Abzug.
@@ -55,9 +55,16 @@ Spielart, Klassenziel und Dauer stehen unter **⚙ Einstellungen** an der Tafel 
 
 Antwortform: automatisch, 4 Auswahlfelder, 2 Auswahlfelder oder Eintippen. Mit Taster und Blick gibt es immer Auswahlfelder. Zum Einstellen auf dem iPad das ⚙ oben rechts eine Sekunde gedrückt halten. Dort lässt sich auch der Taster anlernen. Die Lehrkraft kann alles auch aus der Ferne einstellen (außer das Anlernen einer Taste).
 
-## Stufe 0: Ursache-Wirkung
+## Frühe Stufen
 
-0a Ein Druck löst Licht und Ton aus. 0b Auf ein Signal warten, dann drücken. 0c Zwischen zwei Dingen wählen. 0d Zählen: so oft drücken, wie die Zahl zeigt. Es gibt kein „falsch“, nur Erfolg. Die Uhr der Runde zählt für diese Kinder nicht als Leistungsdruck: Punkte gibt es für jede Aktion gleich.
+**Stufe 0 (nur Taster, Blick oder Antippen):**
+0a Ein Druck löst Licht und Ton aus. 0b Auf ein Signal warten, dann drücken. **0c Einsammeln:** 2 bis 3 Münzen liegen da, jeder Druck sammelt eine in den Beutel (so lässt sich ein Kind mit nur einem Schalter zwei- bis dreimal nacheinander beteiligen). 0d Zwischen zwei Dingen wählen. 0e/0f Zählen: so oft drücken, wie die Zahl zeigt (1 bis 3, dann bis 5). Es gibt kein „falsch“, nur Erfolg. Die Stufe steigt nur nach Bestätigung durch die Lehrkraft.
+
+**Zählen und Tippen (nur Tippen):** Es sind Dinge zu sehen, das Kind tippt so oft auf das iPad. Stufe 1 und 2: Jedes Tippen färbt das nächste Ding ein und zählt mit (Zahl groß, auf Wunsch vorgelesen), bei der richtigen Anzahl ist die Aufgabe geschafft. Stufe 3 und 4: Das Kind tippt selbst die richtige Anzahl und bestätigt mit „Fertig“ (bis 5, dann bis 10). Zu oft getippt zeigt die App die richtige Anzahl.
+
+**Zahlen nachspuren (nur Tippen):** Die Ziffer ist als graue Spur ausgespart, mit orangem Startpunkt (bei mehreren Strichen mit Nummer). Das Kind fährt sie mit dem Finger nach, die getroffene Spur färbt sich grün, bei etwa 90 % ist die Zahl geschafft. „Nochmal“ löscht den Versuch, 💡 zeigt einen wandernden Punkt. Stufen: 1 bis 3, 0 bis 5, 0 bis 9, zweistellige Zahlen (10 bis 20). Wer neben der Spur kritzelt, steigt langsamer auf.
+
+**Voreinstellungen:** Beim „Pro Kind einstellen“ gibt es eine Auswahl „Voreinstellung“: Ganz früh (nur Taster), Ganz früh (Blicksteuerung), Früh (Zählen, Nachspuren, Mengen), Rechnen bis 20, Rechnen bis 100. Sie füllt die Felder passend aus, danach lässt sich noch alles ändern.
 
 ## Spielmodi (an der Tafel, vom Lehrer-Gerät gesteuert)
 

@@ -27,6 +27,8 @@
       <div class="row"><h2 class="grow">${title}</h2><button class="btn" data-m="close">✕</button></div>
       ${!o.profile ? `<div class="banner">${MR.esc(o.noProfileText || 'Von diesem Kind liegt noch kein Stand vor.')}</div>` : ''}
       ${sug.length ? `<div class="banner">Vorschlag: Stufe 0 läuft sicher. <button class="btn small" data-m="sug">Eine Stufe weiter</button></div>` : ''}
+      <div class="field"><span>Voreinstellung</span><select id="fPreset"><option value="">– eigene Einstellung –</option>${Object.keys(E.PRESETS).map(k => opt(k, E.PRESETS[k].label, '')).join('')}</select></div>
+      <p class="muted small" style="margin:-6px 0 0">Füllt die Felder darunter passend aus, danach lässt sich noch alles ändern. Gilt erst nach „Speichern“.</p>
       <div class="field"><span>Eingabeart</span><select id="fInput">${opt('tap', 'Tippen', c.input)}${opt('switch', 'Taster', c.input)}${opt('gaze', 'Blick (Augensteuerung)', c.input)}</select></div>
       <div class="field"><span>Antwortform</span><select id="fAns">${opt('auto', 'Automatisch', ansVal)}${opt('choice4', '4 Auswahlfelder', ansVal)}${opt('choice2', '2 Auswahlfelder', ansVal)}${opt('type', 'Eintippen', ansVal)}</select></div>
       <div class="field"><span>Bereiche</span><div>${MR.STRAND_ORDER.map(s => `<label class="chk"><input type="checkbox" data-strand="${s}" ${c.strands.includes(s) ? 'checked' : ''}> ${S[s].name}</label>`).join('')}</div></div>
@@ -45,6 +47,15 @@
         ${o.onDelete ? '<button class="btn danger small" data-m="del" style="margin-left:auto">Aus Klasse entfernen</button>' : ''}</div>
     </div>`;
     modal.classList.remove('hidden');
+    modal.querySelector('#fPreset').onchange = ev => {
+      const pr = E.PRESETS[ev.target.value]; if (!pr) return;
+      modal.querySelector('#fInput').value = pr.cfg.input;
+      modal.querySelector('#fAns').value = pr.cfg.answer === 'choice' ? (pr.cfg.choices === 2 ? 'choice2' : 'choice4') : (pr.cfg.answer || 'auto');
+      modal.querySelectorAll('[data-strand]').forEach(x => { x.checked = pr.cfg.strands.includes(x.dataset.strand); });
+      modal.querySelector('#fFocus').value = pr.cfg.focus || '';
+      modal.querySelector('#fTap').checked = !!pr.cfg.screenTap;
+      modal.querySelectorAll('[data-lvl]').forEach(sel => { sel.value = pr.lvls[sel.dataset.lvl] ? String(pr.lvls[sel.dataset.lvl]) : ''; });
+    };
     const close = () => modal.classList.add('hidden');
     modal.onclick = e => {
       if (e.target === modal) return close();
