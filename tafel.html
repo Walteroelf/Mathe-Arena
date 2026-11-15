@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
-<link rel="stylesheet" href="css/style.css?v=8">
+<link rel="stylesheet" href="css/style.css?v=9">
 </head>
 <body class="board theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -40,7 +40,8 @@
       <div class="chips" id="chips"></div>
       <p class="muted" id="lobHint"></p>
       <div style="margin-top:22px"><button class="btn good huge" id="btnGo">▶ Start</button></div>
-      <div class="row" style="margin-top:14px"><button class="btn" id="btnMenu">⚙ Einstellungen</button><span class="muted" id="setSummary"></span></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="btnMenu">⚙ Einstellungen</button><button class="btn" id="btnKids">👥 Pro Kind einstellen</button></div>
+      <p class="muted" id="setSummary" style="margin-top:8px"></p>
     </div>
   </section>
   <section class="view" id="vRun">
@@ -79,6 +80,16 @@
   </div>
 </div>
 
+<div class="overlay hidden" id="ovlKids">
+  <div class="card">
+    <div class="row"><h2 class="grow">Pro Kind einstellen</h2><button class="btn primary" id="kidsClose">Schließen</button></div>
+    <p class="muted small" style="margin:0">Eingabeart (Tippen, Taster, Blick), Antwortform, Bereiche und Stufen. Die Einstellungen liegen danach auf dem iPad des Kindes. Nur für die Lehrkraft gedacht.</p>
+    <div id="kidsList"></div>
+  </div>
+</div>
+
+<div class="modal hidden" id="kidModal"></div>
+
 <div class="overlay hidden" id="ovlHelp">
   <div class="card">
     <div class="row"><h2 class="grow">Wer braucht Hilfe?</h2><button class="btn primary" id="helpClose">Schließen</button></div>
@@ -104,6 +115,9 @@
 <script src="lib/qrcode.js"></script>
 <script src="js/common.js?v=2"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/tafel.js?v=7"></script>
+<script src="js/skills.js?v=1"></script>
+<script src="js/engine.js?v=1"></script>
+<script src="js/kidsettings.js?v=1"></script>
+<script src="js/tafel.js?v=8"></script>
 </body>
 </html>

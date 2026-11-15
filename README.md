@@ -21,7 +21,7 @@ Wer die Startseite (`index.html`) öffnet, wählt einmal „Tafel“ oder „iPa
 
 Spielart, Klassenziel und Dauer stehen unter **⚙ Einstellungen** an der Tafel und werden gemerkt. Während der Runde zeigt der Knopf **„✋ Wer braucht Hilfe?“** (nur für die Lehrkraft) die Ampel mit den Pseudonymen: wer Hilfe angefordert hat, wer stockt und wer vielleicht unterfordert ist. Von dort lässt sich beim Kind die Hilfe einblenden.
 
-Die Einstellungen eines Kindes (Eingabeart, Antwortform, Taster anlernen) macht man am jeweiligen iPad (⚙ eine Sekunde gedrückt halten) und sie bleiben dort gespeichert.
+**Pro Kind einstellen:** An der Tafel gibt es im Wartebild den Knopf „👥 Pro Kind einstellen“ (und in der Hilfe-Ansicht ein ⚙ je Kind). Dort lassen sich Eingabeart (Tippen, Taster, Blick), Antwortform (automatisch, 4 oder 2 Auswahlfelder, Eintippen), Bereiche, Fokus, Stufen, Taster- und Blick-Tempo, Vorlesen, Ton und Stil für das jeweilige Kind einstellen. Die Einstellung geht direkt an das iPad des Kindes und bleibt dort gespeichert. Nur eine Taste **anlernen** geht am iPad selbst (⚙ eine Sekunde gedrückt halten). Dieselben Einstellungen gibt es auch auf dem freiwilligen Lehrer-Gerät, dort zusätzlich für Kinder, die gerade nicht verbunden sind.
 
 ### Freiwillig: das Lehrer-Gerät
 
@@ -33,6 +33,10 @@ Die Einstellungen eines Kindes (Eingabeart, Antwortform, Taster anlernen) macht 
 | `schueler.html` | iPad jedes Kindes | Aufgaben lösen mit Tippen, Taster oder Blick, Lernstand liegt hier |
 | `lehrer.html` | freiwillig: iPad, Mac oder Windows | Namen, Sicherung, Fernsteuerung, Einstellungen pro Kind |
 | `index.html` | jedes Gerät | Startseite: „Was ist dieses Gerät?“ (merkt sich die Wahl) |
+
+## Infoblatt
+
+`infoblatt/Mathe-Arena-Infoblatt.pdf` (A4, zwei Seiten): Seite 1 stellt die App vor (Ablauf, Bilder, Datenschutz), Seite 2 ist eine **Kurzanleitung zum Aufhängen** mit je einem QR-Code für Tafel, iPad und Lehrer-Gerät und den drei Schritten einer Stunde.
 
 ## Wie die App das Niveau findet
 

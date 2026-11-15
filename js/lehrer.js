@@ -240,73 +240,17 @@
   }
   function openKid(id) {
     const k = T.kids[id]; if (!k) return;
-    const P = k.profile ? E.ensure(JSON.parse(JSON.stringify(k.profile))) : { cfg: E.defaultCfg(), skills: {}, name: k.name };
-    if (!k.profile) MR.STRAND_ORDER.forEach(s => { P.skills[s] = E.newSkill(s); });
-    const c = P.cfg, sw = c.sw;
-    const ansVal = c.answer === 'choice' ? (c.choices === 2 ? 'choice2' : 'choice4') : c.answer;
-    const km = sw.any ? 'any' : (sw.keys.length === 1 && sw.keys[0] === ' ') ? 'space' : (sw.keys.length === 1 && sw.keys[0] === 'Enter') ? 'enter' : 'keep';
-    const opt = (v, t, cur) => `<option value="${v}" ${String(cur) === String(v) ? 'selected' : ''}>${t}</option>`;
-    const sug = MR.STRAND_ORDER.filter(s => P.skills[s].suggest);
-    const lvRows = MR.STRAND_ORDER.map(s => {
-      const L = MR.clamp(Math.floor(P.skills[s].lvl), 1, MR.nLevels(s));
-      return `<div class="field"><span>${MR.STRANDS[s].name}</span><select data-lvl="${s}"><option value="">unverändert (jetzt Stufe ${L})</option>${MR.STRANDS[s].levels.map((l, i) => `<option value="${i + 1}">${i + 1} · ${MR.esc(l.label)}</option>`).join('')}</select></div>`;
-    }).join('');
-    $('#modal').innerHTML = `<div class="card">
-      <div class="row"><h2 class="grow">${MR.esc(k.label || k.name)} <span class="muted small">${MR.esc(k.name)}</span></h2><button class="btn" data-m="close">✕</button></div>
-      ${!k.profile ? '<div class="banner">Von diesem Kind liegt noch kein Stand vor. Die Einstellungen werden beim nächsten Verbinden übernommen.</div>' : ''}
-      ${sug.length ? `<div class="banner">Vorschlag: Stufe 0 läuft sicher. <button class="btn small" data-m="sug">Eine Stufe weiter</button></div>` : ''}
-      <div class="field"><span>Eingabeart</span><select id="fInput">${opt('tap', 'Tippen', c.input)}${opt('switch', 'Taster', c.input)}${opt('gaze', 'Blick (Augensteuerung)', c.input)}</select></div>
-      <div class="field"><span>Antwortform</span><select id="fAns">${opt('auto', 'Automatisch', ansVal)}${opt('choice4', '4 Auswahlfelder', ansVal)}${opt('choice2', '2 Auswahlfelder', ansVal)}${opt('type', 'Eintippen', ansVal)}</select></div>
-      <div class="field"><span>Bereiche</span><div>${MR.STRAND_ORDER.map(s => `<label class="chk"><input type="checkbox" data-strand="${s}" ${c.strands.includes(s) ? 'checked' : ''}> ${MR.STRANDS[s].name}</label>`).join('')}</div></div>
-      <div class="field"><span>Fokus</span><select id="fFocus"><option value="">kein Fokus</option>${MR.STRAND_ORDER.map(s => opt(s, MR.STRANDS[s].name, c.focus)).join('')}</select></div>
-      <h3 style="margin:6px 0 0">Stufen setzen</h3>${lvRows}
-      <h3 style="margin:6px 0 0">Taster und Blick</h3>
-      <div class="field"><span>Taste</span><select id="fKey">${km === 'keep' ? opt('keep', 'Gelernte Taste(n) behalten', km) : ''}${opt('any', 'Jede Taste', km)}${opt('space', 'Leertaste', km)}${opt('enter', 'Enter', km)}</select></div>
-      <div class="field"><span>Sperrzeit</span><select id="fLock">${[[200, '0,2 s'], [400, '0,4 s'], [800, '0,8 s'], [1500, '1,5 s']].map(o => opt(o[0], o[1], sw.lockMs)).join('')}</select></div>
-      <div class="field"><span>Durchlauf-Tempo</span><select id="fScan">${[[1200, 'schnell'], [1800, 'normal'], [2500, 'langsam'], [3500, 'sehr langsam']].map(o => opt(o[0], o[1], sw.scanMs)).join('')}</select></div>
-      <div class="field"><span>Blick-Verweildauer</span><select id="fDwell">${[[800, '0,8 s'], [1200, '1,2 s'], [1800, '1,8 s'], [2500, '2,5 s']].map(o => opt(o[0], o[1], c.gaze.dwellMs)).join('')}</select></div>
-      <p class="muted small">Eine Taste anlernen geht nur am iPad selbst (⚙ 1 Sekunde gedrückt halten).</p>
-      <h3 style="margin:6px 0 0">Sonstiges</h3>
-      <div class="field"><span>Stil</span><select id="fTheme">${Object.keys(MR.THEMES).map(t => opt(t, MR.THEMES[t].label, c.theme)).join('')}</select></div>
-      <div class="row"><label class="chk"><input type="checkbox" id="fHints" ${c.hints ? 'checked' : ''}> Hilfe-Knopf</label><label class="chk"><input type="checkbox" id="fSpeak" ${c.speak ? 'checked' : ''}> Vorlesen</label><label class="chk"><input type="checkbox" id="fSound" ${c.sound ? 'checked' : ''}> Ton</label><label class="chk"><input type="checkbox" id="fTap" ${c.screenTap ? 'checked' : ''}> Bildschirmtipp zählt</label></div>
-      <div class="row"><button class="btn primary" data-m="save" data-id="${id}">Speichern</button><button class="btn" data-m="close">Abbrechen</button>
-        <button class="btn danger small" data-m="del" data-id="${id}" style="margin-left:auto">Aus Klasse entfernen</button></div>
-    </div>`;
-    $('#modal').classList.remove('hidden');
-    $('#modal').dataset.id = id;
+    MR.KidSettings.open($('#modal'), {
+      name: k.name, label: k.label, profile: k.profile,
+      noProfileText: 'Von diesem Kind liegt noch kein Stand vor. Die Einstellungen werden beim nächsten Verbinden übernommen.',
+      onSave: ovr => { sendOvr(id, ovr); toast('Gespeichert'); renderAll(); },
+      onSuggest: lvls => { sendOvr(id, { lvls }); toast('Stufe angepasst'); },
+      onDelete: () => {
+        if (!confirm('Dieses Kind aus der Klasse auf diesem Gerät entfernen? Das iPad behält seinen Stand.')) return false;
+        delete T.kids[id]; saveNow(); renderAll(); return true;
+      }
+    });
   }
-  $('#modal').addEventListener('click', e => {
-    const b = e.target.closest('[data-m]');
-    if (e.target === $('#modal')) return $('#modal').classList.add('hidden');
-    if (!b) return;
-    const id = $('#modal').dataset.id, a = b.dataset.m;
-    if (a === 'close') return $('#modal').classList.add('hidden');
-    if (a === 'sug') {
-      const k = T.kids[id], lvls = {};
-      MR.STRAND_ORDER.forEach(s => { const sk = k.profile.skills[s]; if (sk.suggest) lvls[s] = Math.min(MR.nLevels(s), Math.floor(sk.lvl) + 1); });
-      sendOvr(id, { lvls }); toast('Stufe angepasst'); return $('#modal').classList.add('hidden');
-    }
-    if (a === 'del') {
-      if (confirm('Dieses Kind aus der Klasse auf diesem Gerät entfernen? Das iPad behält seinen Stand.')) { delete T.kids[id]; saveNow(); $('#modal').classList.add('hidden'); renderAll(); }
-      return;
-    }
-    if (a === 'save') {
-      const m = $('#modal'), cfg = { sw: {}, gaze: {} };
-      cfg.input = m.querySelector('#fInput').value;
-      const av = m.querySelector('#fAns').value;
-      if (av === 'choice4') { cfg.answer = 'choice'; cfg.choices = 4; } else if (av === 'choice2') { cfg.answer = 'choice'; cfg.choices = 2; } else cfg.answer = av;
-      cfg.strands = [...m.querySelectorAll('[data-strand]')].filter(x => x.checked).map(x => x.dataset.strand);
-      if (!cfg.strands.length) cfg.strands = ['mengen'];
-      cfg.focus = m.querySelector('#fFocus').value;
-      const kv = m.querySelector('#fKey').value;
-      if (kv === 'any') { cfg.sw.any = true; cfg.sw.keys = []; } else if (kv === 'space') { cfg.sw.any = false; cfg.sw.keys = [' ']; } else if (kv === 'enter') { cfg.sw.any = false; cfg.sw.keys = ['Enter']; }
-      cfg.sw.lockMs = +m.querySelector('#fLock').value; cfg.sw.scanMs = +m.querySelector('#fScan').value; cfg.gaze.dwellMs = +m.querySelector('#fDwell').value;
-      cfg.theme = m.querySelector('#fTheme').value;
-      cfg.hints = m.querySelector('#fHints').checked; cfg.speak = m.querySelector('#fSpeak').checked; cfg.sound = m.querySelector('#fSound').checked; cfg.screenTap = m.querySelector('#fTap').checked;
-      const lvls = {}; m.querySelectorAll('[data-lvl]').forEach(sel => { if (sel.value) lvls[sel.dataset.lvl] = +sel.value; });
-      sendOvr(id, { cfg, lvls }); toast('Gespeichert'); m.classList.add('hidden'); renderAll();
-    }
-  });
 
   /* ---------- Sicherung ---------- */
   const b64 = bytes => { let s = ''; for (let i = 0; i < bytes.length; i += 8192) s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192)); return btoa(s); };

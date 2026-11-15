@@ -355,6 +355,24 @@
   $('#btnStop').addEventListener('click', () => { stopRound(); $('#ovl').classList.add('hidden'); });
   $('#btnLobby').addEventListener('click', () => { toLobby(); $('#ovl').classList.add('hidden'); });
 
+  /* ---------- Einstellungen pro Kind (nur für die Lehrkraft) ---------- */
+  function openKidSettings(id) {
+    const p = players.get(id); if (!p) return;
+    MR.KidSettings.open($('#kidModal'), {
+      name: p.name, label: '', profile: p.prof,
+      noProfileText: 'Der Stand dieses Kindes kommt gleich an. Die Einstellungen gehen trotzdem durch.',
+      onSave: ovr => { send(p.conn, { k: 'ovr', ovr }); if (p.prof) MR.Engine.applyOvr(p.prof, ovr, true); renderKidsList(); },
+      onSuggest: lvls => { send(p.conn, { k: 'ovr', ovr: { lvls } }); }
+    });
+  }
+  function renderKidsList() {
+    const list = [...players.values()].sort((a, b) => a.name.localeCompare(b.name));
+    $('#kidsList').innerHTML = list.length ? list.map(p => `<div class="helpRow ${p.conn ? '' : 'off'}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow muted">${MR.esc(MR.KidSettings.summary(p.prof))}</span><button class="btn small" data-kid="${MR.esc(p.id)}" ${p.conn ? '' : 'disabled'}>⚙ Einstellen</button></div>`).join('') : '<p class="muted">Noch keine iPads verbunden. Die Kinder scannen zuerst den QR-Code.</p>';
+  }
+  $('#btnKids').addEventListener('click', () => { renderKidsList(); $('#ovlKids').classList.remove('hidden'); });
+  $('#kidsClose').addEventListener('click', () => $('#ovlKids').classList.add('hidden'));
+  $('#kidsList').addEventListener('click', e => { const b = e.target.closest('[data-kid]'); if (b && !b.disabled) openKidSettings(b.dataset.kid); });
+
   /* ---------- Hilfe-Ansicht (nur für die Lehrkraft) ---------- */
   function statusOf(p) {
     const s = p.stat || {}, on = !!p.conn && Date.now() - p.lastSeen < 10000;
@@ -375,12 +393,19 @@
   }
   function renderHelpList() {
     const list = [...players.values()].map(p => ({ p, st: statusOf(p) })).sort((a, b) => a.st.rank - b.st.rank || a.p.name.localeCompare(b.p.name));
-    $('#helpList').innerHTML = list.length ? list.map(({ p, st }) => `<div class="helpRow ${st.k}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow"><b>${MR.esc((p.stat && p.stat.task) || '')}</b> <span class="muted">${MR.esc(st.t)}</span></span>${p.conn ? `<button class="btn small" data-hint="${MR.esc(p.id)}">💡 Hilfe zeigen</button>` : ''}</div>`).join('') : '<p class="muted">Noch keine iPads verbunden.</p>';
+    $('#helpList').innerHTML = list.length ? list.map(({ p, st }) => `<div class="helpRow ${st.k}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow"><b>${MR.esc((p.stat && p.stat.task) || '')}</b> <span class="muted">${MR.esc(st.t)}</span></span>${p.conn ? `<button class="btn small" data-hint="${MR.esc(p.id)}">💡 Hilfe zeigen</button><button class="btn small" data-kid="${MR.esc(p.id)}">⚙</button>` : ''}</div>`).join('') : '<p class="muted">Noch keine iPads verbunden.</p>';
   }
   $('#btnHelp').addEventListener('click', () => { renderHelpList(); $('#ovlHelp').classList.remove('hidden'); });
   $('#helpClose').addEventListener('click', () => $('#ovlHelp').classList.add('hidden'));
-  $('#helpList').addEventListener('click', e => { const b = e.target.closest('[data-hint]'); if (b) { const p = players.get(b.dataset.hint); if (p) send(p.conn, { k: 'hint' }); } });
-  setInterval(() => { if (!$('#ovlHelp').classList.contains('hidden')) renderHelpList(); }, 1000);
+  $('#helpList').addEventListener('click', e => {
+    const b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.hint) { const p = players.get(b.dataset.hint); if (p) send(p.conn, { k: 'hint' }); }
+    else if (b.dataset.kid) openKidSettings(b.dataset.kid);
+  });
+  setInterval(() => {
+    if (!$('#ovlHelp').classList.contains('hidden')) renderHelpList();
+    if (!$('#ovlKids').classList.contains('hidden') && $('#kidModal').classList.contains('hidden')) renderKidsList();
+  }, 1000);
 
   $('#btnNewRoom').addEventListener('click', () => { if (confirm('Neuen Raum anlegen? Alle Geräte müssen sich neu verbinden.')) { newRoom(); $('#ovl').classList.add('hidden'); } });
   $('#btnFull').addEventListener('click', () => { try { document.documentElement.requestFullscreen(); } catch (e) { /* weiter */ } });

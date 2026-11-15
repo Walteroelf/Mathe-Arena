@@ -247,3 +247,6 @@ table.tbl th,table.tbl td{ text-align:left; padding:8px 10px; border-bottom:2px 
 
 .bbar>*{ white-space:nowrap; }
 .bbar{ flex-wrap:wrap; }
+
+#ovlKids .card{ max-width:760px; }
+#kidModal{ z-index:60; }
