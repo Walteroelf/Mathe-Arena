@@ -39,7 +39,7 @@ window.MR = window.MR || {};
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* egal */ } }
   };
 
-  const PALETTE = ['#ff6b6b', '#ffa94d', '#ffd43b', '#69db7c', '#38d9a9', '#4dabf7', '#748ffc', '#b197fc', '#f783ac', '#e599f7', '#66d9e8', '#a9e34b'];
+  const PALETTE = ['#3d9ad6', '#2f9e55', '#f39325', '#8cc63f', '#1f6fae', '#c76f0a', '#9fd3f0', '#ffd200', '#5b7491', '#1e7f4a'];
   MR.colorOf = function (id) {
     let h = 0; const s = String(id);
     for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;

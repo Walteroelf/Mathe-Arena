@@ -4,9 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
-<link rel="stylesheet" href="css/style.css?v=3">
+<link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body class="board theme-jugend">
+<div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
 <div class="bbar">
   <div>Raum <b id="roomTag">----</b></div>
   <div id="modeTag" class="muted"></div>
@@ -37,7 +38,7 @@
       <svg id="track" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet">
         <path id="trackBg" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--panel2)" stroke-width="64" stroke-linejoin="round"/>
         <path id="trackLine" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="14 14"/>
-        <path id="trackFill" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--accent)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round" opacity=".55"/>
+        <path id="trackFill" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--blau)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round"/>
         <rect x="224" y="28" width="12" height="64" fill="#fff" opacity=".9"/>
         <g id="car"><circle r="26" fill="#fff"/><circle r="18" fill="var(--accent2)"/><text y="9" text-anchor="middle" font-size="26" fill="#fff">🏁</text></g>
       </svg>
@@ -82,7 +83,7 @@
 
 <script src="lib/peerjs.min.js"></script>
 <script src="lib/qrcode.js"></script>
-<script src="js/common.js?v=1"></script>
+<script src="js/common.js?v=2"></script>
 <script src="js/net.js?v=1"></script>
 <script src="js/tafel.js?v=3"></script>
 </body>
