@@ -237,3 +237,13 @@ table.tbl th,table.tbl td{ text-align:left; padding:8px 10px; border-bottom:2px 
 @keyframes flyAcross{ from{ transform:translate(-60px,var(--y)); } 50%{ transform:translate(500px,calc(var(--y) - 50px)); } to{ transform:translate(1060px,var(--y)); } }
 @keyframes flap{ from{ transform:scaleX(1); } to{ transform:scaleX(.35); } }
 @media (prefers-reduced-motion:reduce){ .fl-stem,.fl-head{ animation-duration:.01s; animation-delay:0s; } .bfly{ display:none; } }
+
+.btn.huge{ font-size:2rem; padding:20px 48px; min-height:92px; }
+.bbar .gear.alert{ background:var(--orange); border-color:var(--orange-dunkel); color:#1d3a5c; animation:pulse 1.2s infinite; }
+.helpRow{ display:flex; gap:12px; align-items:center; flex-wrap:wrap; padding:10px 0; border-bottom:2px solid var(--line); }
+.helpRow.help{ background:color-mix(in srgb,var(--orange) 18%,transparent); }
+.helpRow.idle,.helpRow.err{ background:color-mix(in srgb,var(--gelb) 22%,transparent); }
+.helpRow.off{ opacity:.5; }
+
+.bbar>*{ white-space:nowrap; }
+.bbar{ flex-wrap:wrap; }

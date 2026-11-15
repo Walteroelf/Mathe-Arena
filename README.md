@@ -9,24 +9,30 @@ Reine HTML/JavaScript-Seiten ohne Build-Schritt, geeignet für GitHub Pages. Kei
 
 Wie Kirmes-Kiosk und die Übersichtsseite am Erscheinungsbild der Spiele München 1972 (Otl Aicher) orientiert: helle, heitere Farben (Blau, Hellblau, Grün, Hellgrün, Gelb, Orange, Silber, viel Weiß), flache Flächen, kleine Rundungen, kein Rot und kein Schwarz (Schrift in Dunkelblau). „Richtig“ ist immer Grün, „Schau noch mal“ Orange. Leseschrift Andika (lokal, SIL Open Font License), Überschriften in der Groteskschrift des Geräts. Dunkler Modus folgt der Geräteeinstellung. Die drei Stile (Jugend, Kinder, Erwachsene) ändern die Akzentfarbe (Blau, Orange, Grün) und die Pseudonym-Listen.
 
-## Die drei Seiten
+## Im Alltag: Tafel und iPads
+
+Für eine Stunde braucht man nur **die Tafel und die iPads**:
+
+1. **An der Tafel** die App öffnen (`tafel.html`, am besten als Lesezeichen oder Startseite des Tafel-Browsers). Es erscheinen ein QR-Code und ein großer grüner Knopf **„Start“**.
+2. **Auf den iPads** die App öffnen (`schueler.html`, als App auf dem Home-Bildschirm) und beim ersten Mal den QR-Code scannen. Ab dann verbindet sich das iPad von selbst wieder mit der Tafel.
+3. **An der Tafel auf „Start“ tippen.**
+
+Wer die Startseite (`index.html`) öffnet, wählt einmal „Tafel“ oder „iPad“. Das Gerät merkt sich die Wahl und öffnet beim nächsten Mal sofort die richtige Seite (ändern: „Gerät ändern“ im Tafel-Menü oder im ⚙ des iPads).
+
+Spielart, Klassenziel und Dauer stehen unter **⚙ Einstellungen** an der Tafel und werden gemerkt. Während der Runde zeigt der Knopf **„✋ Wer braucht Hilfe?“** (nur für die Lehrkraft) die Ampel mit den Pseudonymen: wer Hilfe angefordert hat, wer stockt und wer vielleicht unterfordert ist. Von dort lässt sich beim Kind die Hilfe einblenden.
+
+Die Einstellungen eines Kindes (Eingabeart, Antwortform, Taster anlernen) macht man am jeweiligen iPad (⚙ eine Sekunde gedrückt halten) und sie bleiben dort gespeichert.
+
+### Freiwillig: das Lehrer-Gerät
+
+`lehrer.html` auf iPad, Mac oder Windows-Rechner. Es ist **nicht nötig, um zu spielen**. Es bringt zusätzlich: die echten Namen zu den Pseudonymen (nur dort gespeichert), eine Kopie aller Lernstände als Sicherung, Einstellungen pro Kind aus der Ferne und die Steuerung vom Platz aus. Verbinden: An der Tafel ⚙ Einstellungen → „Lehrer-Gerät verbinden“, dort den Code ins Lehrer-Gerät eintippen oder den QR-Code scannen.
 
 | Seite | Wo | Wofür |
 |---|---|---|
-| `tafel.html` | Browser der digitalen Tafel (Android-Panel) | Spielleitung und Anzeige: QR-Code, Klassenziel oder Wettbewerb, Ergebnisse |
-| `lehrer.html` | Lehrer-Gerät: iPad, MacBook oder Windows-Rechner, nur Browser | Runde starten, Ampel, Einstellungen pro Kind, echte Namen, Sicherung |
-| `schueler.html` | iPad jedes Kindes | Aufgaben lösen mit Tippen, Taster oder Blick |
-
-`index.html` ist die Startseite mit drei Kacheln.
-
-## Eine Stunde
-
-1. **Tafel:** `tafel.html` öffnen. Es erscheinen ein QR-Code und ein 4-stelliger Raumcode.
-2. **Lehrer-Gerät, einmalig:** `lehrer.html` öffnen, an der Tafel ⚙ tippen und den dortigen QR-Code scannen (oder den Kopplungscode eintippen). Das Gerät merkt sich die Tafel.
-3. **Kinder:** `schueler.html` auf dem iPad öffnen, QR-Code scannen, Pseudonym wählen. Ab dem zweiten Mal verbindet sich das iPad von selbst.
-4. **Lehrer-Gerät:** Modus und Dauer wählen, Start.
-
-Tipp: Auf dem iPad „Teilen → Zum Home-Bildschirm“ wählen. Das gibt Vollbild, und Safari löscht die gespeicherten Daten dann nicht so schnell.
+| `tafel.html` | Browser der digitalen Tafel | Spielleitung und Anzeige: QR-Code, Start, Klassenziel, Hilfe-Ansicht |
+| `schueler.html` | iPad jedes Kindes | Aufgaben lösen mit Tippen, Taster oder Blick, Lernstand liegt hier |
+| `lehrer.html` | freiwillig: iPad, Mac oder Windows | Namen, Sicherung, Fernsteuerung, Einstellungen pro Kind |
+| `index.html` | jedes Gerät | Startseite: „Was ist dieses Gerät?“ (merkt sich die Wahl) |
 
 ## Wie die App das Niveau findet
 

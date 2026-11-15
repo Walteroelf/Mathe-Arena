@@ -16,6 +16,7 @@
   let garden = [], planted = 0, celebrated = false;      // Blumenwiese: eine Blume pro richtiger Antwort
 
   const newR = () => ({ pts: 0, ok: 0, tot: 0, ups: 0, streak: 0, best: 0 });
+  const MODE_SHORT = { koop: 'Zusammen spielen', wett: 'Wettbewerb', ohne: 'Ohne Wertung' };
   const MODE_NAMES = { koop: 'Kooperativ: gemeinsames Klassenziel', wett: 'Wettbewerb: Fortschrittspunkte', ohne: 'Ohne Wertung' };
 
   /* ---------- Raum ---------- */
@@ -147,6 +148,7 @@
     if (o.mode) cfg.mode = o.mode;
     if (o.dur) cfg.dur = +o.dur;
     if (o.view) cfg.view = o.view;
+    saveCfg();
     garden = []; planted = 0; celebrated = false; resetMeadow();
     phase = 'run'; endsAt = performance.now() + cfg.dur * 1000; titles = []; ticker = []; tickerDirty = true;
     const n = [...players.values()].filter(p => p.conn).length;
@@ -196,9 +198,10 @@
   function render() {
     $('#modeTag').textContent = MODE_NAMES[cfg.mode] || '';
     const tt = teacher ? 'Lehrer-Gerät verbunden ✓' : 'Noch kein Lehrer-Gerät verbunden';
-    $('#teachTag').textContent = tt; $('#teachLine').textContent = teacher ? tt + ' (Start und Einstellungen dort)' : tt;
-    $('#btnPair').textContent = teacher ? '✓ Lehrer-Gerät verbunden' : '👩‍🏫 Lehrer-Gerät koppeln';
-    $('#btnPair').classList.toggle('primary', !teacher);
+    $('#teachTag').textContent = teacher ? 'verbunden ✓' : '';
+    $('#btnPair2').textContent = teacher ? '✓ Lehrer-Gerät verbunden' : '👩‍🏫 Lehrer-Gerät verbinden';
+    $('#setSummary').textContent = (MODE_SHORT[cfg.mode] || '') + (cfg.mode === 'koop' ? ' · ' + (cfg.view === 'wiese' ? 'Blumenwiese' : 'Rennstrecke') : '') + ' · ' + Math.round(cfg.dur / 60) + ' Min.';
+    renderHelpBadge();
     const list = [...players.values()];
     const wieseOn = cfg.mode === 'koop' && cfg.view === 'wiese' && phase !== 'lobby';
     $('#wieseBg').classList.toggle('hidden', !wieseOn);
@@ -329,6 +332,7 @@
   }, 300);
 
   /* ---------- Menü ---------- */
+  function saveCfg() { MR.store.set('mr.tafelcfg', { mode: cfg.mode, dur: cfg.dur, view: cfg.view }); }
   function openMenu() {
     $('#selMode').value = cfg.mode; $('#selDur').value = String(cfg.dur); $('#selGoal').value = cfg.view;
     $('#ovl').classList.remove('hidden');
@@ -338,15 +342,46 @@
     makePairQR(); $('#pairUrl').textContent = new URL('lehrer.html' + MR.netQuery, location.href).href;
     $('#ovlPair').classList.remove('hidden');
   }
+  function go() { startRound({ mode: cfg.mode, dur: cfg.dur, view: cfg.view }); }
   $('#gear').addEventListener('click', openMenu);
   $('#btnMenu').addEventListener('click', openMenu);
-  $('#btnPair').addEventListener('click', openPair);
+  $('#btnGo').addEventListener('click', go);
   $('#btnPair2').addEventListener('click', openPair);
   $('#pairClose').addEventListener('click', () => $('#ovlPair').classList.add('hidden'));
+  ['selMode', 'selDur', 'selGoal'].forEach(id => $('#' + id).addEventListener('change', () => {
+    cfg.mode = $('#selMode').value; cfg.dur = +$('#selDur').value; cfg.view = $('#selGoal').value; saveCfg(); render();
+  }));
   $('#ovlClose').addEventListener('click', () => $('#ovl').classList.add('hidden'));
-  $('#btnStart').addEventListener('click', () => { startRound({ mode: $('#selMode').value, dur: +$('#selDur').value, view: $('#selGoal').value }); $('#ovl').classList.add('hidden'); });
   $('#btnStop').addEventListener('click', () => { stopRound(); $('#ovl').classList.add('hidden'); });
   $('#btnLobby').addEventListener('click', () => { toLobby(); $('#ovl').classList.add('hidden'); });
+
+  /* ---------- Hilfe-Ansicht (nur für die Lehrkraft) ---------- */
+  function statusOf(p) {
+    const s = p.stat || {}, on = !!p.conn && Date.now() - p.lastSeen < 10000;
+    if (!on) return { k: 'off', rank: 5, t: 'nicht verbunden' };
+    if (s.help) return { k: 'help', rank: 0, t: 'braucht Hilfe' };
+    const slow = s.input && s.input !== 'tap';
+    if (s.phase === 'run' && s.idle > (slow ? 150000 : 90000)) return { k: 'idle', rank: 1, t: 'keine Aktion seit ' + Math.round(s.idle / 1000) + ' s' };
+    if (s.phase === 'run' && s.errRun >= 3) return { k: 'err', rank: 2, t: 'mehrere Fehler in Folge' };
+    if (s.phase === 'run' && s.streak >= 7) return { k: 'fast', rank: 3, t: 'vielleicht unterfordert' };
+    return { k: 'ok', rank: 4, t: s.phase === 'run' ? 'läuft' : 'bereit' };
+  }
+  function helpCount() { return [...players.values()].filter(p => { const k = statusOf(p).k; return k === 'help' || k === 'idle' || k === 'err'; }).length; }
+  function renderHelpBadge() {
+    const b = $('#btnHelp'), run = phase === 'run' || phase === 'wrap', n = helpCount();
+    b.classList.toggle('hidden', !run);
+    b.textContent = '✋ Wer braucht Hilfe?' + (n ? ' (' + n + ')' : '');
+    b.classList.toggle('alert', n > 0);
+  }
+  function renderHelpList() {
+    const list = [...players.values()].map(p => ({ p, st: statusOf(p) })).sort((a, b) => a.st.rank - b.st.rank || a.p.name.localeCompare(b.p.name));
+    $('#helpList').innerHTML = list.length ? list.map(({ p, st }) => `<div class="helpRow ${st.k}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow"><b>${MR.esc((p.stat && p.stat.task) || '')}</b> <span class="muted">${MR.esc(st.t)}</span></span>${p.conn ? `<button class="btn small" data-hint="${MR.esc(p.id)}">💡 Hilfe zeigen</button>` : ''}</div>`).join('') : '<p class="muted">Noch keine iPads verbunden.</p>';
+  }
+  $('#btnHelp').addEventListener('click', () => { renderHelpList(); $('#ovlHelp').classList.remove('hidden'); });
+  $('#helpClose').addEventListener('click', () => $('#ovlHelp').classList.add('hidden'));
+  $('#helpList').addEventListener('click', e => { const b = e.target.closest('[data-hint]'); if (b) { const p = players.get(b.dataset.hint); if (p) send(p.conn, { k: 'hint' }); } });
+  setInterval(() => { if (!$('#ovlHelp').classList.contains('hidden')) renderHelpList(); }, 1000);
+
   $('#btnNewRoom').addEventListener('click', () => { if (confirm('Neuen Raum anlegen? Alle Geräte müssen sich neu verbinden.')) { newRoom(); $('#ovl').classList.add('hidden'); } });
   $('#btnFull').addEventListener('click', () => { try { document.documentElement.requestFullscreen(); } catch (e) { /* weiter */ } });
 
@@ -356,5 +391,6 @@
   keepAwake();
 
   window.MRBoard = { players, get phase() { return phase; }, get goal() { return goal; }, get room() { return room; }, get tkey() { return tkey; } };   // für Tests
+  { const sc = MR.store.get('mr.tafelcfg', null); if (sc) { if (sc.mode) cfg.mode = sc.mode; if (sc.dur) cfg.dur = +sc.dur; if (sc.view) cfg.view = sc.view; } }
   initRoom(); startHost(); render();
 })();

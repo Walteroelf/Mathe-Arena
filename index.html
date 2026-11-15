@@ -4,8 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Mathe-Arena">
 <title>Mathe-Arena</title>
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body class="theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -13,29 +14,49 @@
   <h1>Mathe-Arena</h1>
   <p class="muted">Jedes Kind rechnet auf seinem Niveau, die Tafel zeigt das gemeinsame Spiel. Die App lernt mit, was jedes Kind kann.</p>
 
-  <h2 style="margin-top:28px">So geht es</h2>
-  <p class="muted" style="margin-top:0">Drei Geräte, drei Seiten. Jedes Gerät öffnet seine eigene Seite:</p>
+  <h2 style="margin-top:28px">Was ist dieses Gerät?</h2>
+  <p class="muted" style="margin-top:0">Einmal antippen. Das Gerät merkt sich die Wahl, beim nächsten Mal geht es sofort los.</p>
   <div class="tiles">
-    <a class="tile" id="lTafel" href="tafel.html"><div class="ic">📺</div><h2>1 · Tafel</h2><div class="muted"><b>Auf der digitalen Tafel</b> öffnen. Dort erscheinen QR-Code und Code für die Kinder und das Spiel.</div></a>
-    <a class="tile" id="lLehrer" href="lehrer.html"><div class="ic">🧑‍🏫</div><h2>2 · Lehrer-Gerät</h2><div class="muted"><b>Auf iPad, Mac oder Windows-Rechner</b> öffnen. Mit der Tafel koppeln, Runde starten, Einstellungen, Sicherung.</div></a>
-    <a class="tile" id="lSchueler" href="schueler.html"><div class="ic">📱</div><h2>3 · Schüler-iPad</h2><div class="muted"><b>Auf dem iPad jedes Kindes</b> öffnen und den QR-Code der Tafel scannen. Aufgaben lösen mit Tippen, Taster oder Blick.</div></a>
+    <a class="tile" id="lTafel" href="tafel.html" data-role="tafel"><div class="ic">📺</div><h2>Tafel</h2><div class="muted">Hier spielen alle zusammen. Zeigt den QR-Code und das Spiel.</div></a>
+    <a class="tile" id="lSchueler" href="schueler.html" data-role="schueler"><div class="ic">📱</div><h2>iPad</h2><div class="muted">Hier rechnet ein Kind. Mit Tippen, Taster oder Blick.</div></a>
   </div>
 
-  <div class="card" style="margin-top:8px">
-    <h3 style="margin-top:0">Der Ablauf in vier Schritten</h3>
+  <div class="card">
+    <h3 style="margin-top:0">So läuft eine Stunde</h3>
     <ol class="steps">
-      <li><b>Tafel:</b> Seite „Tafel“ öffnen. Es erscheinen ein QR-Code und ein Code.</li>
-      <li><b>Lehrer-Gerät:</b> Seite „Lehrer-Gerät“ öffnen. An der Tafel auf <b>„Lehrer-Gerät koppeln“</b> tippen und den Code dort eintippen. Das Gerät merkt sich die Tafel.</li>
-      <li><b>Kinder:</b> Seite „Schüler-iPad“ öffnen, QR-Code scannen, einen Namen wählen. Ab dem zweiten Mal verbindet sich das iPad von selbst.</li>
-      <li><b>Lehrer-Gerät:</b> Modus und Dauer wählen, <b>Start</b>.</li>
+      <li><b>An der Tafel</b> die App öffnen. Der QR-Code erscheint.</li>
+      <li><b>Auf den iPads</b> die App öffnen und den QR-Code scannen. Ab dem zweiten Mal verbindet sich das iPad von selbst.</li>
+      <li><b>An der Tafel</b> auf den grünen Knopf <b>„Start“</b> tippen.</li>
     </ol>
   </div>
 
-  <p class="small muted" style="margin-top:20px">Tipp: Auf dem iPad „Teilen → Zum Home-Bildschirm“ wählen. Das gibt Vollbild, und die gespeicherten Daten bleiben besser erhalten.</p>
-  <p class="small muted">Datenschutz: Auf der Tafel und den iPads gibt es nur Pseudonyme. Echte Namen stehen nur auf dem Lehrer-Gerät. Es gibt keine Konten und keinen Cloud-Speicher. Details in der <a href="https://github.com/Walteroelf/Mathe-Arena#readme">README</a>.</p>
+  <details style="margin-top:18px">
+    <summary><b>Freiwillig: Lehrer-Gerät</b></summary>
+    <p class="muted">Für die echten Namen der Kinder, eine Sicherung der Lernstände und die Steuerung vom Platz aus. Zum Spielen wird es nicht gebraucht. Auf iPad, Mac oder Windows-Rechner öffnen.</p>
+    <a class="btn" id="lLehrer" href="lehrer.html" data-role="lehrer">🧑‍🏫 Lehrer-Gerät öffnen</a>
+  </details>
+
+  <p class="small muted" style="margin-top:22px">Tipp: Auf dem iPad „Teilen → Zum Home-Bildschirm“ wählen. Das gibt Vollbild, und die gespeicherten Daten bleiben besser erhalten.</p>
+  <p class="small muted">Datenschutz: Auf der Tafel und den iPads gibt es nur Pseudonyme. Echte Namen stehen nur auf dem freiwilligen Lehrer-Gerät. Es gibt keine Konten und keinen Cloud-Speicher. Details in der <a href="https://github.com/Walteroelf/Mathe-Arena#readme">README</a>.</p>
   <p class="small muted">Testbetrieb ohne Internet (alle Seiten im selben Browser): <a id="lTest" href="tafel.html?net=bc">Tafel mit ?net=bc öffnen</a>, danach Lehrer und Schüler ebenfalls mit <code>?net=bc</code>. Version <span id="ver"></span></p>
+  <p class="small muted" id="roleLine"></p>
 </div>
 <script src="js/common.js?v=2"></script>
-<script>document.getElementById('ver').textContent = MR.VERSION;</script>
+<script>
+  document.getElementById('ver').textContent = MR.VERSION;
+  var PAGES = { tafel: 'tafel.html', schueler: 'schueler.html', lehrer: 'lehrer.html' };
+  var NAMES = { tafel: 'Tafel', schueler: 'iPad', lehrer: 'Lehrer-Gerät' };
+  var role = MR.store.get('mr.role', null);
+  var wechseln = location.search.indexOf('wechseln') >= 0;
+  if (role && PAGES[role] && !wechseln) {
+    location.replace(PAGES[role] + MR.netQuery);          // Gerät kennt seine Rolle: gleich weiter
+  } else if (role && PAGES[role]) {
+    document.getElementById('roleLine').innerHTML = 'Dieses Gerät ist bisher: <b>' + NAMES[role] + '</b>. <a href="#" id="roleReset">Auswahl vergessen</a>';
+    document.getElementById('roleReset').onclick = function (e) { e.preventDefault(); MR.store.del('mr.role'); location.href = 'index.html'; };
+  }
+  document.querySelectorAll('[data-role]').forEach(function (a) {
+    a.addEventListener('click', function () { MR.store.set('mr.role', a.dataset.role); a.href = PAGES[a.dataset.role] + MR.netQuery; });
+  });
+</script>
 </body>
 </html>

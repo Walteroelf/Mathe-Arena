@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body class="board theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -13,6 +13,7 @@
   <div id="modeTag" class="muted"></div>
   <div id="netTag" class="muted small"></div>
   <div class="timer" id="timer"></div>
+  <button class="gear alertable hidden" id="btnHelp">✋ Wer braucht Hilfe?</button>
   <button class="gear" id="gear" aria-label="Menü">⚙ Menü</button>
 </div>
 <div class="bmain">
@@ -38,11 +39,8 @@
       <h2>Dabei sind</h2>
       <div class="chips" id="chips"></div>
       <p class="muted" id="lobHint"></p>
-      <div class="row" style="margin-top:22px">
-        <button class="btn primary big" id="btnPair">👩‍🏫 Lehrer-Gerät koppeln</button>
-        <button class="btn big" id="btnMenu">▶ Runde starten</button>
-      </div>
-      <p class="muted" id="teachLine"></p>
+      <div style="margin-top:22px"><button class="btn good huge" id="btnGo">▶ Start</button></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="btnMenu">⚙ Einstellungen</button><span class="muted" id="setSummary"></span></div>
     </div>
   </section>
   <section class="view" id="vRun">
@@ -69,15 +67,23 @@
 
 <div class="overlay hidden" id="ovl">
   <div class="card">
-    <div class="row"><h2 class="grow">Menü</h2><button class="btn" id="ovlClose">Schließen</button></div>
-    <div class="row"><label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
-      <label>Klassenziel <select id="selGoal"><option value="piste">Rennstrecke</option><option value="wiese">Blumenwiese</option></select></label>
-      <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480" selected>8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
-    <div class="row"><button class="btn good big" id="btnStart">▶ Runde starten</button><button class="btn" id="btnStop">■ Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
-    <p class="muted small">Die Runde lässt sich auch bequem vom Lehrer-Gerät aus starten.</p>
-    <hr style="border:0;border-top:1px solid var(--line);width:100%">
-    <div class="row"><button class="btn" id="btnPair2">👩‍🏫 Lehrer-Gerät koppeln</button><span class="small muted" id="teachTag"></span></div>
-    <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button></div>
+    <div class="row"><h2 class="grow">Einstellungen</h2><button class="btn primary" id="ovlClose">Fertig</button></div>
+    <div class="row"><label>Spielart <select id="selMode"><option value="koop">Zusammen spielen (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label></div>
+    <div class="row"><label>Klassenziel <select id="selGoal"><option value="piste">Rennstrecke</option><option value="wiese">Blumenwiese</option></select></label>
+      <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480">8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
+    <div class="row"><button class="btn" id="btnStop">■ Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
+    <hr style="border:0;border-top:2px solid var(--line);width:100%">
+    <div><b>Lehrer-Gerät (freiwillig)</b><p class="muted small" style="margin:4px 0 0">Für die echten Namen der Kinder, eine Sicherung der Lernstände und die Steuerung vom Platz aus. Zum Spielen wird es nicht gebraucht.</p></div>
+    <div class="row"><button class="btn" id="btnPair2">👩‍🏫 Lehrer-Gerät verbinden</button><span class="small muted" id="teachTag"></span></div>
+    <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button><a class="btn small" href="index.html?wechseln">Gerät ändern</a></div>
+  </div>
+</div>
+
+<div class="overlay hidden" id="ovlHelp">
+  <div class="card">
+    <div class="row"><h2 class="grow">Wer braucht Hilfe?</h2><button class="btn primary" id="helpClose">Schließen</button></div>
+    <div id="helpList"></div>
+    <p class="muted small">Nur für die Lehrkraft gedacht. Bitte nach dem Hinschauen wieder schließen.</p>
   </div>
 </div>
 
@@ -98,6 +104,6 @@
 <script src="lib/qrcode.js"></script>
 <script src="js/common.js?v=2"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/tafel.js?v=6"></script>
+<script src="js/tafel.js?v=7"></script>
 </body>
 </html>

@@ -508,7 +508,7 @@
         <p class="small muted">Dein Lernstand liegt auf diesem iPad. Eine Kopie bekommt die Lehrkraft. Du kannst ihn auch als Datei sichern.</p>
         <button class="btn" data-act="export">Profil als Datei sichern</button>
       </div>
-      <div class="small muted">Mathe-Arena ${MR.VERSION}</div>
+      <div class="small muted"><a href="index.html?wechseln">Gerät ändern (Tafel oder iPad)</a> · Mathe-Arena ${MR.VERSION}</div>
     </div>`;
   }
   function testKey(key, down, status) {

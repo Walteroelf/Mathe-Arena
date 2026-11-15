@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mathe-Arena Lehrer">
 <title>Mathe-Arena · Lehrer</title>
-<link rel="stylesheet" href="css/style.css?v=6">
+<link rel="stylesheet" href="css/style.css?v=8">
 </head>
 <body class="teacher theme-jugend">
 
@@ -16,7 +16,7 @@
 
 <div id="app" class="hidden">
   <div class="tbar">
-    <a href="index.html" class="small muted" style="text-decoration:none">◀ Start</a> <b>Lehrer</b>
+    <a href="index.html?wechseln" class="small muted" style="text-decoration:none">◀ Start</a> <b>Lehrer-Gerät</b> <span class="small muted">(freiwillig)</span>
     <span id="chipTafel" class="small"></span>
     <div class="tabs">
       <button data-tab="runde" class="on">Runde</button>
@@ -31,11 +31,12 @@
 
     <section id="tab-runde">
       <div class="card" id="pairCard">
-        <h2 style="margin-top:0">Schritt 1: Mit der Tafel verbinden</h2>
+        <h2 style="margin-top:0">Mit der Tafel verbinden</h2>
+        <p class="muted" style="margin-top:0">Das Lehrer-Gerät ist freiwillig. Gespielt wird auch ohne. Hier liegen die echten Namen, die Sicherung und die Fernsteuerung.</p>
         <ol class="steps">
           <li><b>An der Tafel</b> (oder auf dem Gerät, das die Tafel sein soll) diese Seite öffnen:<br><code id="tafelUrl"></code>
             <div class="row" style="margin-top:8px"><button class="btn small" id="copyUrl">Adresse kopieren</button><a class="btn small" id="tafelLink" target="_blank" rel="noopener" style="text-decoration:none">Tafel-Seite hier in neuem Tab öffnen (zum Testen)</a></div></li>
-          <li>Dort auf den Knopf <b>„Lehrer-Gerät koppeln“</b> tippen. Es erscheinen ein QR-Code und ein Code.</li>
+          <li>Dort auf <b>⚙ Einstellungen</b> tippen, dann auf <b>„Lehrer-Gerät verbinden“</b>. Es erscheinen ein QR-Code und ein Code.</li>
           <li>Den Code hier eintippen (oder den QR-Code mit der Kamera scannen):
             <div class="row" style="margin-top:8px">
               <input id="pairIn" placeholder="z. B. ABCD-XYZABC" style="text-transform:uppercase;letter-spacing:.1em;width:14em;font-size:1.2rem" autocapitalize="characters" autocomplete="off">
@@ -107,6 +108,6 @@
 <script src="js/net.js?v=1"></script>
 <script src="js/skills.js?v=1"></script>
 <script src="js/engine.js?v=1"></script>
-<script src="js/lehrer.js?v=4"></script>
+<script src="js/lehrer.js?v=5"></script>
 </body>
 </html>
