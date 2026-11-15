@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
-<link rel="stylesheet" href="css/style.css?v=4">
+<link rel="stylesheet" href="css/style.css?v=6">
 </head>
 <body class="board theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -16,6 +16,18 @@
   <button class="gear" id="gear" aria-label="Menü">⚙ Menü</button>
 </div>
 <div class="bmain">
+  <div id="wieseBg" class="hidden" aria-hidden="true">
+    <svg id="meadow" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMax meet">
+      <rect x="-1200" y="-800" width="3400" height="1220" fill="var(--sky)"/>
+      <g class="sun"><circle cx="880" cy="70" r="46" fill="var(--gelb)"/><g stroke="var(--gelb)" stroke-width="8" stroke-linecap="round"><path d="M880 6V-14M880 134V154M816 70H796M944 70H964M835 25L821 11M925 115L939 129M925 25L939 11M835 115L821 129"/></g></g>
+      <g fill="#fff" opacity=".9"><ellipse cx="190" cy="80" rx="70" ry="22"/><ellipse cx="240" cy="64" rx="46" ry="22"/><ellipse cx="560" cy="48" rx="60" ry="18"/><ellipse cx="600" cy="36" rx="38" ry="17"/></g>
+      <path d="M-1200 160 Q-300 110 200 150 T800 140 T1600 150 L2200 420 L-1200 420Z" fill="var(--hill1)"/>
+      <path d="M-1200 205 Q-200 165 300 197 T900 189 T2200 201 L2200 420 L-1200 420Z" fill="var(--hill2)"/>
+      <g id="flowers"></g>
+      <g id="fx"></g>
+    </svg>
+    <div id="meadowInfo"></div>
+  </div>
   <section class="view" id="vLobby">
     <div style="text-align:center">
       <div id="qrBox"></div>
@@ -59,6 +71,7 @@
   <div class="card">
     <div class="row"><h2 class="grow">Menü</h2><button class="btn" id="ovlClose">Schließen</button></div>
     <div class="row"><label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
+      <label>Klassenziel <select id="selGoal"><option value="piste">Rennstrecke</option><option value="wiese">Blumenwiese</option></select></label>
       <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480" selected>8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
     <div class="row"><button class="btn good big" id="btnStart">▶ Runde starten</button><button class="btn" id="btnStop">■ Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
     <p class="muted small">Die Runde lässt sich auch bequem vom Lehrer-Gerät aus starten.</p>
@@ -85,6 +98,6 @@
 <script src="lib/qrcode.js"></script>
 <script src="js/common.js?v=2"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/tafel.js?v=3"></script>
+<script src="js/tafel.js?v=6"></script>
 </body>
 </html>

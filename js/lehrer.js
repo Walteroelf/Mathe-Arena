@@ -49,7 +49,7 @@
   }
   function unlock() {
     unlocked = true; $('#gate').classList.add('hidden'); $('#app').classList.remove('hidden');
-    $('#selMode').value = T.ui.mode; $('#selDur').value = String(T.ui.dur);
+    $('#selMode').value = T.ui.mode; $('#selDur').value = String(T.ui.dur); $('#selGoal').value = T.ui.view || 'piste';
     renderAll(); if (!link) pairFromHash();
   }
   $('#lockBtn').onclick = () => { if (T.pin) showGate(); else toast('Keine PIN gesetzt (Reiter Sicherung)'); };
@@ -125,7 +125,8 @@
   /* ---------- Rundensteuerung ---------- */
   $('#selMode').onchange = () => { T.ui.mode = $('#selMode').value; saveT(); };
   $('#selDur').onchange = () => { T.ui.dur = +$('#selDur').value; saveT(); };
-  $('#btnStart').onclick = () => cmd({ c: 'start', mode: $('#selMode').value, dur: +$('#selDur').value });
+  $('#selGoal').onchange = () => { T.ui.view = $('#selGoal').value; saveT(); };
+  $('#btnStart').onclick = () => cmd({ c: 'start', mode: $('#selMode').value, dur: +$('#selDur').value, view: $('#selGoal').value });
   $('#btnStop').onclick = () => cmd({ c: 'stop' });
   $('#btnLobby').onclick = () => cmd({ c: 'lobby' });
 

@@ -51,7 +51,9 @@ Antwortform: automatisch, 4 Auswahlfelder, 2 Auswahlfelder oder Eintippen. Mit T
 
 ## Spielmodi (an der Tafel, vom Lehrer-Gerät gesteuert)
 
-- **Kooperativ:** Gemeinsames Klassenziel auf einer Rennstrecke. Jede richtige Antwort bringt alle weiter, Zusatzrunden sind möglich.
+- **Kooperativ:** Gemeinsames Klassenziel, in der Auswahl „Klassenziel“ wählbar:
+  - **Rennstrecke:** Jede richtige Antwort bringt alle weiter, Zusatzrunden sind möglich.
+  - **Blumenwiese:** Jede richtige Antwort lässt eine Blume sprießen (Stiel wächst, Blüte geht auf). Die Blütenfarbe hängt am Kind, ein Stufenaufstieg bringt eine Sonnenblume und einen Schmetterling. Ist das Ziel erreicht, fliegen mehr Schmetterlinge, und die Wiese blüht weiter. Am Ende bleibt die Wiese unter den Titeln stehen.
 - **Wettbewerb:** Fortschrittspunkte statt Trefferzahl (10 pro richtige Antwort plus Serienbonus, 30 für einen Stufenaufstieg). Die Bahnen stehen in fester Reihenfolge, es gibt keine Rangliste von unten nach oben. Am Ende „Sieger“, „Serienkönig“, „Aufsteiger“.
 - **Ohne Wertung:** nur ein gemeinsamer Zähler.
 

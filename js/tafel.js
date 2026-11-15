@@ -11,8 +11,9 @@
   const unclaimed = new Map();      // tmp -> { conn, since }   (frische iPads, die ein Profil brauchen)
   let teacher = null, hostApi = null, room = '', tkey = '', takenTries = 0, tmpN = 0;
   let phase = 'lobby';              // lobby | run | wrap | end
-  let cfg = { mode: 'koop', dur: 480 };
+  let cfg = { mode: 'koop', dur: 480, view: 'piste' };   // view: piste (Rennstrecke) | wiese (Blumenwiese)
   let endsAt = 0, wrapUntil = 0, goal = { prog: 0, target: 0 }, ticker = [], tickerDirty = false, titles = [];
+  let garden = [], planted = 0, celebrated = false;      // Blumenwiese: eine Blume pro richtiger Antwort
 
   const newR = () => ({ pts: 0, ok: 0, tot: 0, ups: 0, streak: 0, best: 0 });
   const MODE_NAMES = { koop: 'Kooperativ: gemeinsames Klassenziel', wett: 'Wettbewerb: Fortschrittspunkte', ohne: 'Ohne Wertung' };
@@ -122,7 +123,7 @@
     if (phase !== 'run' && phase !== 'wrap') return;     // Allein-Üben zählt nicht fürs Klassenspiel
     const r = p.r;
     r.tot++; if (d.ok) r.ok++; r.pts += d.pts || 0; if (d.up) r.ups++; r.streak = d.streak || 0; r.best = Math.max(r.best, r.streak);
-    if (d.ok) { goal.prog++; pushTick(p, d); }
+    if (d.ok) { goal.prog++; pushTick(p, d); if (garden.length < 3000) garden.push({ id: p.id, up: !!d.up }); }
   }
   function pushTick(p, d) {
     ticker.push({ name: p.name, c: MR.colorOf(p.id), up: !!d.up, ts: Date.now() });
@@ -133,7 +134,7 @@
   /* ---------- Befehle (Lehrer-Gerät oder Tafel-Menü) ---------- */
   function onCmd(d) {
     switch (d.c) {
-      case 'start': startRound({ mode: d.mode, dur: d.dur }); break;
+      case 'start': startRound({ mode: d.mode, dur: d.dur, view: d.view }); break;
       case 'stop': stopRound(); break;
       case 'lobby': toLobby(); break;
       case 'ovr': { const p = players.get(d.id); if (p) send(p.conn, { k: 'ovr', ovr: d.ovr }); break; }
@@ -145,6 +146,8 @@
   function startRound(o) {
     if (o.mode) cfg.mode = o.mode;
     if (o.dur) cfg.dur = +o.dur;
+    if (o.view) cfg.view = o.view;
+    garden = []; planted = 0; celebrated = false; resetMeadow();
     phase = 'run'; endsAt = performance.now() + cfg.dur * 1000; titles = []; ticker = []; tickerDirty = true;
     const n = [...players.values()].filter(p => p.conn).length;
     goal = { prog: 0, target: Math.max(8, Math.round(n * cfg.dur / 14)) };
@@ -169,7 +172,7 @@
   function rosterMsg() {
     const now = Date.now();
     return {
-      k: 'roster', ph: phase, mode: cfg.mode, dur: cfg.dur,
+      k: 'roster', ph: phase, mode: cfg.mode, dur: cfg.dur, view: cfg.view,
       left: phase === 'run' ? Math.max(0, endsAt - performance.now()) : 0, goal,
       players: [...players.values()].map(p => ({
         id: p.id, name: p.name, online: !!p.conn && now - p.lastSeen < 10000, rev: p.rev,
@@ -197,6 +200,11 @@
     $('#btnPair').textContent = teacher ? '✓ Lehrer-Gerät verbunden' : '👩‍🏫 Lehrer-Gerät koppeln';
     $('#btnPair').classList.toggle('primary', !teacher);
     const list = [...players.values()];
+    const wieseOn = cfg.mode === 'koop' && cfg.view === 'wiese' && phase !== 'lobby';
+    $('#wieseBg').classList.toggle('hidden', !wieseOn);
+    $('#wieseBg').classList.toggle('low', phase === 'end');
+    $('#vEnd').classList.toggle('wiese', wieseOn);
+    if (wieseOn) updateMeadow();
     if (phase === 'lobby') {
       setView('vLobby'); $('#timer').textContent = '';
       $('#chips').innerHTML = list.map(chipHTML).join('');
@@ -207,9 +215,10 @@
       const left = phase === 'run' ? endsAt - performance.now() : 0;
       $('#timer').textContent = phase === 'wrap' ? 'Letzte Aufgaben …' : MR.fmtTime(left);
       const wett = cfg.mode === 'wett', ohne = cfg.mode === 'ohne';
-      $('#trackBox').classList.toggle('hidden', wett);
+      const wiese = cfg.mode === 'koop' && cfg.view === 'wiese';
+      $('#trackBox').classList.toggle('hidden', wett || wiese);
       $('#lanes').classList.toggle('hidden', !wett);
-      if (wett) renderLanes(list); else renderTrack(ohne);
+      if (wett) renderLanes(list); else if (!wiese) renderTrack(ohne);
       if (tickerDirty) {
         tickerDirty = false;
         $('#ticker').innerHTML = ticker.slice(-6).map(t => `<span class="tick" style="--c:${t.c}">${t.up ? '⬆ ' : '✓ '}${MR.esc(t.name)}</span>`).join('');
@@ -256,6 +265,62 @@
     $('#endChips').innerHTML = list.filter(p => p.r.tot > 0).map(chipHTML).join('');
   }
 
+  /* ---------- Blumenwiese ---------- */
+  const SVGNS = 'http://www.w3.org/2000/svg';
+  function halton(i, b) { let f = 1, r = 0; while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; }
+  // Blütenfarben: Aicher-Palette ohne Grün, damit die Blüten auf der Wiese leuchten
+  const PETALS = ['#ffffff', '#ffd200', '#f39325', '#3d9ad6', '#9fd3f0', '#1f6fae'];
+  function petalColor(id) { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PETALS[h % PETALS.length]; }
+  function flowerSVG(i, c, up) {
+    const hx = halton(i + 1, 2), yn = halton(i + 1, 3);
+    const x = 40 + 920 * hx, y = 215 + 160 * yn;
+    const k = Math.min(1, Math.sqrt(36 / Math.max(goal.target, 36)));
+    const sc = k * (0.85 + 0.95 * yn) * (up ? 1.4 : 1);
+    const h = 46 + ((i * 37) % 26), lean = ((i * 53) % 11) - 5;
+    const mid = (c === '#ffd200' || c === '#f39325' || c === '#ffffff') ? (c === '#ffffff' ? '#ffd200' : '#1f6fae') : '#ffd200';
+    const type = up ? 'sun' : ['daisy', 'tulip', 'five'][i % 3];
+    let head = '';
+    if (type === 'daisy') {
+      for (let a = 0; a < 360; a += 45) head += `<ellipse cx="0" cy="-15" rx="7" ry="14" fill="${c}" transform="rotate(${a})"/>`;
+      head += `<circle r="9" fill="${mid}"/>`;
+    } else if (type === 'five') {
+      for (let a = 0; a < 360; a += 72) head += `<circle cx="0" cy="-13" r="10.5" fill="${c}" transform="rotate(${a})"/>`;
+      head += `<circle r="7" fill="${mid}"/>`;
+    } else if (type === 'tulip') {
+      head = `<path d="M-14,-8 Q-14,11 0,11 Q14,11 14,-8 L9,-27 L3,-13 L0,-30 L-3,-13 L-9,-27 Z" fill="${c}"/>`;
+    } else {
+      for (let a = 0; a < 360; a += 24) head += `<ellipse cx="0" cy="-22" rx="7" ry="15" fill="#ffd200" transform="rotate(${a})"/>`;
+      head += `<circle r="15" fill="#c76f0a"/><circle r="9" fill="${c}"/>`;
+    }
+    return `<g class="fl" data-y="${y.toFixed(1)}" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${lean}) scale(${sc.toFixed(3)})">
+      <g class="fl-stem"><path d="M0 0 C 5 ${-h * .3} -5 ${-h * .65} 0 ${-h}" stroke="var(--gruen)" stroke-width="5" fill="none" stroke-linecap="round"/>
+        <ellipse cx="-11" cy="${-h * .35}" rx="10" ry="4.5" fill="var(--hellgruen)" transform="rotate(-35 -11 ${-h * .35})"/>
+        <ellipse cx="11" cy="${-h * .5}" rx="10" ry="4.5" fill="var(--hellgruen)" transform="rotate(35 11 ${-h * .5})"/></g>
+      <g transform="translate(0,${-h})"><g class="fl-head">${head}</g></g></g>`;
+  }
+  function resetMeadow() { const l = $('#flowers'); if (l) l.innerHTML = ''; const f = $('#fx'); if (f) f.innerHTML = ''; }
+  function butterfly(y) {
+    const g = document.createElementNS(SVGNS, 'g'); g.setAttribute('class', 'bfly'); g.style.setProperty('--y', y + 'px');
+    g.innerHTML = '<g class="wing"><ellipse cx="-9" cy="-4" rx="9" ry="12" fill="#f39325"/><ellipse cx="9" cy="-4" rx="9" ry="12" fill="#3d9ad6"/></g><rect x="-1.5" y="-12" width="3" height="22" rx="1.5" fill="#1d3a5c"/>';
+    $('#fx').appendChild(g); setTimeout(() => g.remove(), 9000);
+  }
+  function updateMeadow() {
+    const layer = $('#flowers');
+    while (planted < garden.length) {
+      const g = garden[planted], c = petalColor(g.id);
+      const tmp = document.createElementNS(SVGNS, 'g'); tmp.innerHTML = flowerSVG(planted, c, g.up);
+      const node = tmp.firstElementChild, y = +node.dataset.y;
+      // weiter hinten stehende Blumen zuerst zeichnen (Tiefe)
+      let before = null; for (const el of layer.children) { if (+el.dataset.y > y) { before = el; break; } }
+      layer.insertBefore(node, before);
+      if (g.up) butterfly(120 + (planted * 41) % 120);
+      planted++;
+    }
+    const prog = goal.target > 0 ? goal.prog / goal.target : 0;
+    $('#meadowInfo').innerHTML = `<b>${planted}</b> ${planted === 1 ? 'Blume' : 'Blumen'}` + (cfg.mode === 'koop' && goal.target ? ` · Ziel ${goal.target}` + (prog >= 1 ? ' erreicht! 🎉' : '') : '');
+    if (prog >= 1 && !celebrated) { celebrated = true; for (let i = 0; i < 4; i++) setTimeout(() => butterfly(90 + i * 55), i * 700); }
+  }
+
   setInterval(() => {
     const now = performance.now();
     if (phase === 'run' && endsAt - now <= 0) { phase = 'wrap'; wrapUntil = now + 6000; }
@@ -265,7 +330,7 @@
 
   /* ---------- Menü ---------- */
   function openMenu() {
-    $('#selMode').value = cfg.mode; $('#selDur').value = String(cfg.dur);
+    $('#selMode').value = cfg.mode; $('#selDur').value = String(cfg.dur); $('#selGoal').value = cfg.view;
     $('#ovl').classList.remove('hidden');
   }
   function openPair() {
@@ -279,7 +344,7 @@
   $('#btnPair2').addEventListener('click', openPair);
   $('#pairClose').addEventListener('click', () => $('#ovlPair').classList.add('hidden'));
   $('#ovlClose').addEventListener('click', () => $('#ovl').classList.add('hidden'));
-  $('#btnStart').addEventListener('click', () => { startRound({ mode: $('#selMode').value, dur: +$('#selDur').value }); $('#ovl').classList.add('hidden'); });
+  $('#btnStart').addEventListener('click', () => { startRound({ mode: $('#selMode').value, dur: +$('#selDur').value, view: $('#selGoal').value }); $('#ovl').classList.add('hidden'); });
   $('#btnStop').addEventListener('click', () => { stopRound(); $('#ovl').classList.add('hidden'); });
   $('#btnLobby').addEventListener('click', () => { toLobby(); $('#ovl').classList.add('hidden'); });
   $('#btnNewRoom').addEventListener('click', () => { if (confirm('Neuen Raum anlegen? Alle Geräte müssen sich neu verbinden.')) { newRoom(); $('#ovl').classList.add('hidden'); } });
