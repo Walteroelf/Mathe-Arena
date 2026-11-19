@@ -39,7 +39,8 @@ window.MR = window.MR || {};
     del(k) { try { localStorage.removeItem(k); } catch (e) { /* egal */ } }
   };
 
-  const PALETTE = ['#3d9ad6', '#2f9e55', '#f39325', '#8cc63f', '#1f6fae', '#c76f0a', '#9fd3f0', '#ffd200', '#5b7491', '#1e7f4a'];
+  // Farben der Kinder (Ränder, Punkte, Balken) aus der Olympia-72-Palette, siehe design.css
+  const PALETTE = ['#4DB2E6', '#46A84A', '#F39200', '#A6D27A', '#0067B1', '#9A4F00', '#FFD100', '#B9C1C8', '#1E6B2A', '#0D2B4E'];
   MR.colorOf = function (id) {
     let h = 0; const s = String(id);
     for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) >>> 0;

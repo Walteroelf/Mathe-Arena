@@ -7,7 +7,7 @@ Reine HTML/JavaScript-Seiten ohne Build-Schritt, geeignet für GitHub Pages. Kei
 
 ## Gestaltung
 
-Wie Kirmes-Kiosk und die Übersichtsseite am Erscheinungsbild der Spiele München 1972 (Otl Aicher) orientiert: helle, heitere Farben (Blau, Hellblau, Grün, Hellgrün, Gelb, Orange, Silber, viel Weiß), flache Flächen, kleine Rundungen, kein Rot und kein Schwarz (Schrift in Dunkelblau). „Richtig“ ist immer Grün, „Schau noch mal“ Orange. Leseschrift Andika (lokal, SIL Open Font License), Überschriften in der Groteskschrift des Geräts. Dunkler Modus folgt der Geräteeinstellung. Die drei Stile (Jugend, Kinder, Erwachsene) ändern die Akzentfarbe (Blau, Orange, Grün) und die Pseudonym-Listen.
+Wie Kirmes-Kiosk und die Übersichtsseite am Erscheinungsbild der Spiele München 1972 (Otl Aicher) orientiert: helle, heitere Farben (Blau, Hellblau, Grün, Hellgrün, Gelb, Orange, Silber, viel Weiß), flache Flächen, kleine Rundungen, kein Rot und kein Schwarz (Schrift in Dunkelblau). „Richtig“ ist immer Grün, „Schau noch mal“ Orange. Schrift Andika für alles (lokal, SIL Open Font License). Farben, Schrift und Regeln kommen aus `design.css`, siehe `DESIGN.md`: auf jeder Farbfläche dunkelblaue Schrift, keine weiße Schrift. Dunkler Modus folgt der Geräteeinstellung. Die drei Stile (Jugend, Kinder, Erwachsene) ändern die Akzentfarbe (Blau, Orange, Grün) und die Pseudonym-Listen.
 
 ## Im Alltag: Tafel und iPads
 
