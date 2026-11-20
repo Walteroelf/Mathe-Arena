@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-title" content="Mathe-Arena Lehrer">
 <title>Mathe-Arena · Lehrer</title>
 <link rel="stylesheet" href="design.css?v=3">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body class="teacher theme-jugend">
 
@@ -17,7 +17,7 @@
 
 <div id="app" class="hidden">
   <div class="tbar">
-    <a href="index.html?wechseln" class="small muted" style="text-decoration:none">◀ Start</a> <b>Lehrer-Gerät</b> <span class="small muted">(freiwillig)</span>
+    <a href="index.html?wechseln" class="small muted" style="text-decoration:none"><i data-ic="back"></i> Start</a> <b>Lehrer-Gerät</b> <span class="small muted">(freiwillig)</span>
     <span id="chipTafel" class="small"></span>
     <div class="tabs">
       <button data-tab="runde" class="on">Runde</button>
@@ -25,7 +25,7 @@
       <button data-tab="sicherung">Sicherung</button>
       <button data-tab="hilfe">Hilfe</button>
     </div>
-    <button class="btn small" id="lockBtn" style="margin-left:auto">🔒 Sperren</button>
+    <button class="btn small" id="lockBtn" style="margin-left:auto"><i data-ic="lock"></i> Sperren</button>
   </div>
   <div class="tmain">
     <div id="bannerBox"></div>
@@ -37,7 +37,7 @@
         <ol class="steps">
           <li><b>An der Tafel</b> (oder auf dem Gerät, das die Tafel sein soll) diese Seite öffnen:<br><code id="tafelUrl"></code>
             <div class="row" style="margin-top:8px"><button class="btn small" id="copyUrl">Adresse kopieren</button><a class="btn small" id="tafelLink" target="_blank" rel="noopener" style="text-decoration:none">Tafel-Seite hier in neuem Tab öffnen (zum Testen)</a></div></li>
-          <li>Dort auf <b>⚙ Einstellungen</b> tippen, dann auf <b>„Lehrer-Gerät verbinden“</b>. Es erscheinen ein QR-Code und ein Code.</li>
+          <li>Dort auf <b>Einstellungen</b> tippen, dann auf <b>„Lehrer-Gerät verbinden“</b>. Es erscheinen ein QR-Code und ein Code.</li>
           <li>Den Code hier eintippen (oder den QR-Code mit der Kamera scannen):
             <div class="row" style="margin-top:8px">
               <input id="pairIn" placeholder="z. B. ABCD-XYZABC" style="text-transform:uppercase;letter-spacing:.1em;width:14em;font-size:1.2rem" autocapitalize="characters" autocomplete="off">
@@ -51,8 +51,8 @@
           <label>Modus <select id="selMode"><option value="koop">Kooperativ (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label>
           <label>Klassenziel <select id="selGoal"><option value="piste">Rennstrecke</option><option value="wiese">Blumenwiese</option></select></label>
           <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480">8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label>
-          <button class="btn good" id="btnStart">▶ Start</button>
-          <button class="btn" id="btnStop">■ Beenden</button>
+          <button class="btn good" id="btnStart"><i data-ic="play"></i> Start</button>
+          <button class="btn" id="btnStop"><i data-ic="stop"></i> Beenden</button>
           <button class="btn small" id="btnLobby">Lobby</button>
         </div>
         <div id="phaseLine" class="muted" style="margin-top:8px"></div>
@@ -88,7 +88,7 @@
         <h3>So läuft eine Stunde</h3>
         <ol>
           <li>Tafel: Seite „Tafel“ öffnen. Es erscheint ein QR-Code.</li>
-          <li>Dieses Gerät: einmal koppeln (⚙ an der Tafel). Das Gerät merkt sich die Tafel.</li>
+          <li>Dieses Gerät: einmal koppeln (Menü an der Tafel). Das Gerät merkt sich die Tafel.</li>
           <li>Kinder: iPad-App öffnen, QR-Code scannen. Ab dem zweiten Mal verbindet sich das iPad von selbst.</li>
           <li>Hier: Modus und Dauer wählen, Start.</li>
         </ol>
@@ -105,11 +105,11 @@
 <div id="modal" class="modal hidden"></div>
 
 <script src="lib/peerjs.min.js"></script>
-<script src="js/common.js?v=4"></script>
+<script src="js/common.js?v=5"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/skills.js?v=4"></script>
+<script src="js/skills.js?v=5"></script>
 <script src="js/engine.js?v=2"></script>
-<script src="js/kidsettings.js?v=2"></script>
-<script src="js/lehrer.js?v=6"></script>
+<script src="js/kidsettings.js?v=3"></script>
+<script src="js/lehrer.js?v=7"></script>
 </body>
 </html>

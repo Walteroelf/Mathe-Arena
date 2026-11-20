@@ -24,7 +24,7 @@
     }).join('');
     const title = o.label ? `${MR.esc(o.label)} <span class="muted small">${MR.esc(o.name)}</span>` : MR.esc(o.name);
     modal.innerHTML = `<div class="card">
-      <div class="row"><h2 class="grow">${title}</h2><button class="btn" data-m="close">✕</button></div>
+      <div class="row"><h2 class="grow">${title}</h2><button class="btn" data-m="close" aria-label="Schließen">${MR.icon('close')}</button></div>
       ${!o.profile ? `<div class="banner">${MR.esc(o.noProfileText || 'Von diesem Kind liegt noch kein Stand vor.')}</div>` : ''}
       ${sug.length ? `<div class="banner">Vorschlag: Stufe 0 läuft sicher. <button class="btn small" data-m="sug">Eine Stufe weiter</button></div>` : ''}
       <div class="field"><span>Voreinstellung</span><select id="fPreset"><option value="">– eigene Einstellung –</option>${Object.keys(E.PRESETS).map(k => opt(k, E.PRESETS[k].label, '')).join('')}</select></div>
@@ -39,7 +39,7 @@
       <div class="field"><span>Sperrzeit</span><select id="fLock">${[[200, '0,2 s'], [400, '0,4 s'], [800, '0,8 s'], [1500, '1,5 s']].map(x => opt(x[0], x[1], sw.lockMs)).join('')}</select></div>
       <div class="field"><span>Durchlauf-Tempo</span><select id="fScan">${[[1200, 'schnell'], [1800, 'normal'], [2500, 'langsam'], [3500, 'sehr langsam']].map(x => opt(x[0], x[1], sw.scanMs)).join('')}</select></div>
       <div class="field"><span>Blick-Verweildauer</span><select id="fDwell">${[[800, '0,8 s'], [1200, '1,2 s'], [1800, '1,8 s'], [2500, '2,5 s']].map(x => opt(x[0], x[1], c.gaze.dwellMs)).join('')}</select></div>
-      <p class="muted small">Eine Taste anlernen geht nur am iPad selbst (⚙ 1 Sekunde gedrückt halten).</p>
+      <p class="muted small">Eine Taste anlernen geht nur am iPad selbst (Zahnrad oben rechts eine Sekunde gedrückt halten).</p>
       <h3 style="margin:6px 0 0">Sonstiges</h3>
       <div class="field"><span>Stil</span><select id="fTheme">${Object.keys(MR.THEMES).map(t => opt(t, MR.THEMES[t].label, c.theme)).join('')}</select></div>
       <div class="row"><label class="chk"><input type="checkbox" id="fHints" ${c.hints ? 'checked' : ''}> Hilfe-Knopf</label><label class="chk"><input type="checkbox" id="fSpeak" ${c.speak ? 'checked' : ''}> Vorlesen</label><label class="chk"><input type="checkbox" id="fSound" ${c.sound ? 'checked' : ''}> Ton</label><label class="chk"><input type="checkbox" id="fTap" ${c.screenTap ? 'checked' : ''}> Bildschirmtipp zählt</label></div>
@@ -91,10 +91,16 @@
   function summary(profile) {
     if (!profile) return 'noch keine Daten';
     const c = profile.cfg || {};
-    const inp = { tap: '👆 Tippen', switch: '🔘 Taster', gaze: '👁 Blick' }[c.input] || '👆 Tippen';
+    const inp = { tap: 'Tippen', switch: 'Taster', gaze: 'Blick' }[c.input] || 'Tippen';
     const ans = c.input && c.input !== 'tap' ? '' : { auto: ' · Antwort automatisch', choice: c.choices === 2 ? ' · 2 Felder' : ' · 4 Felder', type: ' · Eintippen' }[c.answer] || '';
     return inp + ans;
   }
 
-  MR.KidSettings = { open, summary };
+    const SUM_ICON = { tap: 'finger', switch: 'button', gaze: 'eye' };
+  function summaryHTML(profile) {
+    const ic = SUM_ICON[(profile && profile.cfg && profile.cfg.input) || 'tap'] || 'finger';
+    return MR.icon(ic) + ' ' + MR.esc(summary(profile));
+  }
+
+  MR.KidSettings = { open, summary, summaryHTML };
 })(window.MR);

@@ -116,10 +116,10 @@
 
   /* ---------- Stufe 0 ---------- */
   const SHAPES = [
-    { name: 'der rote Kreis', c: '#ff5a5a', s: 'circle' },
-    { name: 'das blaue Quadrat', c: '#4f8cff', s: 'square' },
-    { name: 'das gelbe Dreieck', c: '#ffd43b', s: 'tri' },
-    { name: 'der grüne Kreis', c: '#2fd27a', s: 'circle' }
+    { name: 'der orange Kreis', c: '#F39200', s: 'circle' },
+    { name: 'das hellblaue Quadrat', c: '#4DB2E6', s: 'square' },
+    { name: 'das gelbe Dreieck', c: '#FFD100', s: 'tri' },
+    { name: 'der grüne Kreis', c: '#46A84A', s: 'circle' }
   ];
   function genS0(L) {
     if (L === 1) return { kind: 'fx', q: 'Drücke!', speak: 'Drücke!', tags: ['s0'] };
@@ -203,7 +203,7 @@
   /* Hilfe: Material zur Aufgabe (als HTML) */
   MR.dotsSVG = function (n, layout, pos, split) {
     if (layout === 'free') {
-      const c = (pos || freePositions(n)).map(p => `<circle cx="${p.x}" cy="${p.y}" r="6.5" fill="var(--accent)"/>`).join('');
+      const c = (pos || freePositions(n)).map(p => `<circle cx="${p.x}" cy="${p.y}" r="6.5" fill="var(--accent)" stroke="var(--dunkelblau)" stroke-width="1.4"/>`).join('');
       return `<svg viewBox="0 0 100 60" aria-hidden="true">${c}</svg>`;
     }
     const frames = Math.max(1, Math.ceil(n / 10)); let out = '';
@@ -214,7 +214,7 @@
         out += `<rect x="${x}" y="${y}" width="17" height="17" rx="3" fill="none" stroke="var(--line)" stroke-width="1.2"/>`;
         if (idx < n) {
           const col = (split != null && idx >= split) ? 'var(--accent2)' : 'var(--accent)';
-          out += `<circle cx="${x + 8.5}" cy="${y + 8.5}" r="6" fill="${col}"/>`;
+          out += `<circle cx="${x + 8.5}" cy="${y + 8.5}" r="6" fill="${col}" stroke="var(--dunkelblau)" stroke-width="1.2"/>`;
         }
       }
     }
@@ -233,9 +233,9 @@
   };
   MR.shapeSVG = function (sh) {
     let body;
-    if (sh.s === 'circle') body = `<circle cx="50" cy="50" r="44" fill="${sh.c}"/>`;
-    else if (sh.s === 'square') body = `<rect x="8" y="8" width="84" height="84" rx="8" fill="${sh.c}"/>`;
-    else body = `<polygon points="50,6 94,92 6,92" fill="${sh.c}"/>`;
+    if (sh.s === 'circle') body = `<circle cx="50" cy="50" r="42" fill="${sh.c}" stroke="#0D2B4E" stroke-width="5"/>`;
+    else if (sh.s === 'square') body = `<rect x="9" y="9" width="82" height="82" rx="10" fill="${sh.c}" stroke="#0D2B4E" stroke-width="5"/>`;
+    else body = `<polygon points="50,8 93,91 7,91" fill="${sh.c}" stroke="#0D2B4E" stroke-width="5" stroke-linejoin="round"/>`;
     return `<svg class="shape" viewBox="0 0 100 100" aria-hidden="true">${body}</svg>`;
   };
 })(window.MR);

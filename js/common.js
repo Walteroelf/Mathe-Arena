@@ -47,12 +47,49 @@ window.MR = window.MR || {};
     return PALETTE[h % PALETTE.length];
   };
 
+  // Eigene Linien-Symbole (24 x 24, Strich 2,2, runde Enden), Farbe = Schriftfarbe. Keine Emojis (siehe DESIGN.md).
+  const ICONS = {
+    gear: '<circle cx="12" cy="12" r="3.2"/><circle cx="12" cy="12" r="7"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8"/>',
+    users: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.6 2.7-6 6-6s6 2.4 6 6"/><circle cx="17.5" cy="9" r="2.6"/><path d="M17 14c2.6.2 4.5 2.2 4.5 5"/>',
+    person: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20.5c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/>',
+    tv: '<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 21h8M12 16v5"/>',
+    tablet: '<rect x="6" y="2.5" width="12" height="19" rx="2.5"/><path d="M10.5 18.5h3"/>',
+    play: '<path d="M8 5l11 7-11 7z"/>',
+    stop: '<rect x="6" y="6" width="12" height="12" rx="1.5"/>',
+    check: '<path d="M5 12.5l4.5 4.5L19 7"/>',
+    up: '<path d="M12 19V5M6 11l6-6 6 6"/>',
+    refresh: '<path d="M20 12a8 8 0 1 1-2.6-5.9M20 4v5h-5"/>',
+    bulb: '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.6 10.8c.7.6 1.1 1.3 1.1 2.2h5c0-.9.4-1.6 1.1-2.2A6 6 0 0 0 12 3z"/>',
+    hand: '<path d="M8 12.5V6a1.5 1.5 0 0 1 3 0v5M11 11V4.5a1.5 1.5 0 0 1 3 0V11M14 11V6a1.5 1.5 0 0 1 3 0v8.5c0 3.8-2.5 6.5-6 6.5-3 0-4.6-1.4-6-4l-1.4-2.6a1.5 1.5 0 0 1 2.5-1.6L8 14.5"/>',
+    finger: '<path d="M9 11V5a1.5 1.5 0 0 1 3 0v6M12 10.5a1.5 1.5 0 0 1 3 0V12M15 11.5a1.5 1.5 0 0 1 3 0V16c0 3-2 5-5 5h-1.5c-2 0-3-1-4.5-3L4.5 14.5a1.5 1.5 0 0 1 2.4-1.8L9 15"/>',
+    button: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/>',
+    eye: '<path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    flame: '<path d="M12 3c1 3.6 5.5 5.6 5.5 10.2a5.5 5.5 0 0 1-11 0c0-2.2 1-3.4 2.2-4.4.1 2 .9 2.6 1.6 2.6C9.6 9.2 10.6 6 12 3z"/>',
+    trophy: '<path d="M7 4h10v5a5 5 0 0 1-10 0zM7 6H4v1.5A3.5 3.5 0 0 0 7.5 11M17 6h3v1.5a3.5 3.5 0 0 1-3.5 3.5M12 14v4M8 21h8M9.5 18h5"/>',
+    star: '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>',
+    flag: '<path d="M5 21V4M5 4h13l-2.5 4 2.5 4H5"/>',
+    back: '<path d="M15 5l-7 7 7 7"/>',
+    lock: '<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>',
+    close: '<path d="M6 6l12 12M18 6L6 18"/>',
+    backspace: '<path d="M9 5h11a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H9l-6-7z"/><path d="M12.5 9.5l5 5M17.5 9.5l-5 5"/>',
+    flower: '<circle cx="12" cy="12" r="2.4"/><circle cx="12" cy="6" r="2.6"/><circle cx="12" cy="18" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="12" r="2.6"/>'
+  };
+  MR.icon = function (name) {
+    return '<svg class="symbol" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[name] || '') + '</svg>';
+  };
+  // <i data-ic="gear"></i> im HTML wird zum Symbol
+  MR.applyIcons = function (root) {
+    (root || document).querySelectorAll('[data-ic]').forEach(function (el) { el.outerHTML = MR.icon(el.getAttribute('data-ic')); });
+  };
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', function () { MR.applyIcons(); });
+  else MR.applyIcons();
+
   MR.makeQR = function (url) {
     try {
       const qr = qrcode(0, 'M'); qr.addData(url); qr.make();
       const n = qr.getModuleCount(), cell = 8, q = 3, size = (n + q * 2) * cell;
       const c = document.createElement('canvas'); c.width = c.height = size;
-      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, size, size); g.fillStyle = '#000';
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, size, size); g.fillStyle = '#0D2B4E';
       for (let r = 0; r < n; r++) for (let k = 0; k < n; k++) if (qr.isDark(r, k)) g.fillRect((k + q) * cell, (r + q) * cell, cell, cell);
       return c;
     } catch (e) { console.error(e); return null; }

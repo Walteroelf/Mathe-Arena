@@ -165,9 +165,9 @@
   function computeTitles() {
     const arr = [...players.values()].filter(p => p.r.tot > 0), out = [];
     const best = fn => arr.reduce((b, p) => (!b || fn(p) > fn(b)) ? p : b, null);
-    if (cfg.mode === 'wett') { const w = best(p => p.r.pts); if (w) out.push({ ic: '🏆', t: 'Sieger', who: w.name, sub: w.r.pts + ' Punkte' }); }
-    const sk = best(p => p.r.best); if (sk && sk.r.best >= 3) out.push({ ic: '🔥', t: 'Serienkönig', who: sk.name, sub: 'Serie von ' + sk.r.best });
-    const au = best(p => p.r.ups); if (au && au.r.ups >= 1) out.push({ ic: '⬆️', t: 'Aufsteiger', who: au.name, sub: au.r.ups + (au.r.ups > 1 ? ' Stufen' : ' Stufe') });
+    if (cfg.mode === 'wett') { const w = best(p => p.r.pts); if (w) out.push({ ic: MR.icon('trophy'), t: 'Sieger', who: w.name, sub: w.r.pts + ' Punkte' }); }
+    const sk = best(p => p.r.best); if (sk && sk.r.best >= 3) out.push({ ic: MR.icon('flame'), t: 'Serienkönig', who: sk.name, sub: 'Serie von ' + sk.r.best });
+    const au = best(p => p.r.ups); if (au && au.r.ups >= 1) out.push({ ic: MR.icon('up'), t: 'Aufsteiger', who: au.name, sub: au.r.ups + (au.r.ups > 1 ? ' Stufen' : ' Stufe') });
     return out;
   }
 
@@ -197,9 +197,8 @@
   }
   function render() {
     $('#modeTag').textContent = MODE_NAMES[cfg.mode] || '';
-    const tt = teacher ? 'Lehrer-Gerät verbunden ✓' : 'Noch kein Lehrer-Gerät verbunden';
-    $('#teachTag').textContent = teacher ? 'verbunden ✓' : '';
-    $('#btnPair2').textContent = teacher ? '✓ Lehrer-Gerät verbunden' : '👩‍🏫 Lehrer-Gerät verbinden';
+    $('#teachTag').textContent = teacher ? 'verbunden' : '';
+    $('#btnPair2').innerHTML = teacher ? MR.icon('check') + ' Lehrer-Gerät verbunden' : MR.icon('person') + ' Lehrer-Gerät verbinden';
     $('#setSummary').textContent = (MODE_SHORT[cfg.mode] || '') + (cfg.mode === 'koop' ? ' · ' + (cfg.view === 'wiese' ? 'Blumenwiese' : 'Rennstrecke') : '') + ' · ' + Math.round(cfg.dur / 60) + ' Min.';
     renderHelpBadge();
     const list = [...players.values()];
@@ -224,7 +223,7 @@
       if (wett) renderLanes(list); else if (!wiese) renderTrack(ohne);
       if (tickerDirty) {
         tickerDirty = false;
-        $('#ticker').innerHTML = ticker.slice(-6).map(t => `<span class="tick" style="--c:${t.c}">${t.up ? '⬆ ' : '✓ '}${MR.esc(t.name)}</span>`).join('');
+        $('#ticker').innerHTML = ticker.slice(-6).map(t => `<span class="tick" style="--c:${t.c}">${MR.icon(t.up ? 'up' : 'check')} ${MR.esc(t.name)}</span>`).join('');
       }
     } else {
       setView('vEnd'); $('#timer').textContent = '';
@@ -255,7 +254,7 @@
   function renderEnd(list) {
     if (cfg.mode === 'koop') {
       const prog = goal.target > 0 ? goal.prog / goal.target : 0;
-      $('#endHead').textContent = prog >= 1 ? 'Ziel erreicht! 🎉' : 'Gut gemacht!';
+      $('#endHead').innerHTML = prog >= 1 ? 'Ziel erreicht! ' + MR.icon('star') : 'Gut gemacht!';
       $('#endSub').textContent = 'Zusammen: ' + goal.prog + ' richtige Antworten (' + Math.round(prog * 100) + ' % vom Ziel)';
     } else if (cfg.mode === 'wett') {
       $('#endHead').textContent = 'Runde zu Ende';
@@ -272,7 +271,7 @@
   const SVGNS = 'http://www.w3.org/2000/svg';
   function halton(i, b) { let f = 1, r = 0; while (i > 0) { f /= b; r += f * (i % b); i = Math.floor(i / b); } return r; }
   // Blütenfarben: Aicher-Palette ohne Grün, damit die Blüten auf der Wiese leuchten
-  const PETALS = ['#ffffff', '#ffd200', '#f39325', '#3d9ad6', '#9fd3f0', '#1f6fae'];
+  const PETALS = ['#FFFFFF', '#FFD100', '#F39200', '#4DB2E6'];
   function petalColor(id) { let h = 0; for (const ch of String(id)) h = (h * 31 + ch.charCodeAt(0)) >>> 0; return PETALS[h % PETALS.length]; }
   function flowerSVG(i, c, up) {
     const hx = halton(i + 1, 2), yn = halton(i + 1, 3);
@@ -280,7 +279,7 @@
     const k = Math.min(1, Math.sqrt(36 / Math.max(goal.target, 36)));
     const sc = k * (0.85 + 0.95 * yn) * (up ? 1.4 : 1);
     const h = 46 + ((i * 37) % 26), lean = ((i * 53) % 11) - 5;
-    const mid = (c === '#ffd200' || c === '#f39325' || c === '#ffffff') ? (c === '#ffffff' ? '#ffd200' : '#1f6fae') : '#ffd200';
+    const mid = (c === '#FFD100' || c === '#F39200') ? '#0D2B4E' : '#FFD100';
     const type = up ? 'sun' : ['daisy', 'tulip', 'five'][i % 3];
     let head = '';
     if (type === 'daisy') {
@@ -292,8 +291,8 @@
     } else if (type === 'tulip') {
       head = `<path d="M-14,-8 Q-14,11 0,11 Q14,11 14,-8 L9,-27 L3,-13 L0,-30 L-3,-13 L-9,-27 Z" fill="${c}"/>`;
     } else {
-      for (let a = 0; a < 360; a += 24) head += `<ellipse cx="0" cy="-22" rx="7" ry="15" fill="#ffd200" transform="rotate(${a})"/>`;
-      head += `<circle r="15" fill="#c76f0a"/><circle r="9" fill="${c}"/>`;
+      for (let a = 0; a < 360; a += 24) head += `<ellipse cx="0" cy="-22" rx="7" ry="15" fill="#FFD100" stroke="#0D2B4E" stroke-width="1" transform="rotate(${a})"/>`;
+      head += `<circle r="15" fill="#F39200" stroke="#0D2B4E" stroke-width="1.5"/><circle r="9" fill="${c}"/>`;
     }
     return `<g class="fl" data-y="${y.toFixed(1)}" transform="translate(${x.toFixed(1)},${y.toFixed(1)}) rotate(${lean}) scale(${sc.toFixed(3)})">
       <g class="fl-stem"><path d="M0 0 C 5 ${-h * .3} -5 ${-h * .65} 0 ${-h}" stroke="var(--gruen)" stroke-width="5" fill="none" stroke-linecap="round"/>
@@ -304,7 +303,7 @@
   function resetMeadow() { const l = $('#flowers'); if (l) l.innerHTML = ''; const f = $('#fx'); if (f) f.innerHTML = ''; }
   function butterfly(y) {
     const g = document.createElementNS(SVGNS, 'g'); g.setAttribute('class', 'bfly'); g.style.setProperty('--y', y + 'px');
-    g.innerHTML = '<g class="wing"><ellipse cx="-9" cy="-4" rx="9" ry="12" fill="#f39325"/><ellipse cx="9" cy="-4" rx="9" ry="12" fill="#3d9ad6"/></g><rect x="-1.5" y="-12" width="3" height="22" rx="1.5" fill="#1d3a5c"/>';
+    g.innerHTML = '<g class="wing"><ellipse cx="-9" cy="-4" rx="9" ry="12" fill="#F39200"/><ellipse cx="9" cy="-4" rx="9" ry="12" fill="#4DB2E6"/></g><rect x="-1.5" y="-12" width="3" height="22" rx="1.5" fill="#0D2B4E"/>';
     $('#fx').appendChild(g); setTimeout(() => g.remove(), 9000);
   }
   function updateMeadow() {
@@ -320,7 +319,7 @@
       planted++;
     }
     const prog = goal.target > 0 ? goal.prog / goal.target : 0;
-    $('#meadowInfo').innerHTML = `<b>${planted}</b> ${planted === 1 ? 'Blume' : 'Blumen'}` + (cfg.mode === 'koop' && goal.target ? ` · Ziel ${goal.target}` + (prog >= 1 ? ' erreicht! 🎉' : '') : '');
+    $('#meadowInfo').innerHTML = `${MR.icon('flower')} ${planted} ${planted === 1 ? 'Blume' : 'Blumen'}` + (cfg.mode === 'koop' && goal.target ? ` · Ziel ${goal.target}` + (prog >= 1 ? ' erreicht' : '') : '');
     if (prog >= 1 && !celebrated) { celebrated = true; for (let i = 0; i < 4; i++) setTimeout(() => butterfly(90 + i * 55), i * 700); }
   }
 
@@ -367,7 +366,7 @@
   }
   function renderKidsList() {
     const list = [...players.values()].sort((a, b) => a.name.localeCompare(b.name));
-    $('#kidsList').innerHTML = list.length ? list.map(p => `<div class="helpRow ${p.conn ? '' : 'off'}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow muted">${MR.esc(MR.KidSettings.summary(p.prof))}</span><button class="btn small" data-kid="${MR.esc(p.id)}" ${p.conn ? '' : 'disabled'}>⚙ Einstellen</button></div>`).join('') : '<p class="muted">Noch keine iPads verbunden. Die Kinder scannen zuerst den QR-Code.</p>';
+    $('#kidsList').innerHTML = list.length ? list.map(p => `<div class="helpRow ${p.conn ? '' : 'off'}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow muted">${MR.KidSettings.summaryHTML(p.prof)}</span><button class="btn small" data-kid="${MR.esc(p.id)}" ${p.conn ? '' : 'disabled'}>${MR.icon('gear')} Einstellen</button></div>`).join('') : '<p class="muted">Noch keine iPads verbunden. Die Kinder scannen zuerst den QR-Code.</p>';
   }
   $('#btnKids').addEventListener('click', () => { renderKidsList(); $('#ovlKids').classList.remove('hidden'); });
   $('#kidsClose').addEventListener('click', () => $('#ovlKids').classList.add('hidden'));
@@ -388,12 +387,12 @@
   function renderHelpBadge() {
     const b = $('#btnHelp'), run = phase === 'run' || phase === 'wrap', n = helpCount();
     b.classList.toggle('hidden', !run);
-    b.textContent = '✋ Wer braucht Hilfe?' + (n ? ' (' + n + ')' : '');
+    b.innerHTML = MR.icon('hand') + ' Wer braucht Hilfe?' + (n ? ' (' + n + ')' : '');
     b.classList.toggle('alert', n > 0);
   }
   function renderHelpList() {
     const list = [...players.values()].map(p => ({ p, st: statusOf(p) })).sort((a, b) => a.st.rank - b.st.rank || a.p.name.localeCompare(b.p.name));
-    $('#helpList').innerHTML = list.length ? list.map(({ p, st }) => `<div class="helpRow ${st.k}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow"><b>${MR.esc((p.stat && p.stat.task) || '')}</b> <span class="muted">${MR.esc(st.t)}</span></span>${p.conn ? `<button class="btn small" data-hint="${MR.esc(p.id)}">💡 Hilfe zeigen</button><button class="btn small" data-kid="${MR.esc(p.id)}">⚙</button>` : ''}</div>`).join('') : '<p class="muted">Noch keine iPads verbunden.</p>';
+    $('#helpList').innerHTML = list.length ? list.map(({ p, st }) => `<div class="helpRow ${st.k}"><span class="chip" style="--c:${MR.colorOf(p.id)}"><span class="dot"></span>${MR.esc(p.name)}</span><span class="grow"><b>${MR.esc((p.stat && p.stat.task) || '')}</b> <span class="muted">${MR.esc(st.t)}</span></span>${p.conn ? `<button class="btn small" data-hint="${MR.esc(p.id)}">${MR.icon('bulb')} Hilfe zeigen</button><button class="btn small" data-kid="${MR.esc(p.id)}" aria-label="Einstellungen">${MR.icon('gear')}</button>` : ''}</div>`).join('') : '<p class="muted">Noch keine iPads verbunden.</p>';
   }
   $('#btnHelp').addEventListener('click', () => { renderHelpList(); $('#ovlHelp').classList.remove('hidden'); });
   $('#helpClose').addEventListener('click', () => $('#ovlHelp').classList.add('hidden'));

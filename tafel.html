@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathe-Arena · Tafel</title>
 <link rel="stylesheet" href="design.css?v=3">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body class="board theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -14,8 +14,8 @@
   <div id="modeTag" class="muted"></div>
   <div id="netTag" class="muted small"></div>
   <div class="timer" id="timer"></div>
-  <button class="gear alertable hidden" id="btnHelp">✋ Wer braucht Hilfe?</button>
-  <button class="gear" id="gear" aria-label="Menü">⚙ Menü</button>
+  <button class="gear alertable hidden" id="btnHelp"><i data-ic="hand"></i> Wer braucht Hilfe?</button>
+  <button class="gear" id="gear" aria-label="Menü"><i data-ic="gear"></i> Menü</button>
 </div>
 <div class="bmain">
   <div id="wieseBg" class="hidden" aria-hidden="true">
@@ -40,8 +40,8 @@
       <h2>Dabei sind</h2>
       <div class="chips" id="chips"></div>
       <p class="muted" id="lobHint"></p>
-      <div style="margin-top:22px"><button class="btn good huge" id="btnGo">▶ Start</button></div>
-      <div class="row" style="margin-top:14px"><button class="btn" id="btnMenu">⚙ Einstellungen</button><button class="btn" id="btnKids">👥 Pro Kind einstellen</button></div>
+      <div style="margin-top:22px"><button class="btn good huge" id="btnGo"><i data-ic="play"></i> Start</button></div>
+      <div class="row" style="margin-top:14px"><button class="btn" id="btnMenu"><i data-ic="gear"></i> Einstellungen</button><button class="btn" id="btnKids"><i data-ic="users"></i> Pro Kind einstellen</button></div>
       <p class="muted" id="setSummary" style="margin-top:8px"></p>
     </div>
   </section>
@@ -50,9 +50,9 @@
       <svg id="track" viewBox="0 0 1000 380" preserveAspectRatio="xMidYMid meet">
         <path id="trackBg" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--panel2)" stroke-width="64" stroke-linejoin="round"/>
         <path id="trackLine" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--line)" stroke-width="3" stroke-dasharray="14 14"/>
-        <path id="trackFill" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--blau)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round"/>
+        <path id="trackFill" d="M 230 60 H 770 A 130 130 0 0 1 770 320 H 230 A 130 130 0 0 1 230 60 Z" fill="none" stroke="var(--hellblau)" stroke-width="64" stroke-linejoin="round" stroke-linecap="round"/>
         <rect x="224" y="28" width="12" height="64" fill="#fff" opacity=".9"/>
-        <g id="car"><circle r="26" fill="#fff"/><circle r="18" fill="var(--accent2)"/><text y="9" text-anchor="middle" font-size="26" fill="#fff">🏁</text></g>
+        <g id="car"><circle r="26" fill="var(--weiss)"/><circle r="22" fill="var(--gelb)"/><path d="M-8 11V-11M-8 -11h15l-3.5 5.5L7 0H-8" fill="none" stroke="var(--dunkelblau)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
       </svg>
       <div id="pct"><b id="pctNum">0 %</b><span id="pctSub"></span></div>
     </div>
@@ -73,10 +73,10 @@
     <div class="row"><label>Spielart <select id="selMode"><option value="koop">Zusammen spielen (Klassenziel)</option><option value="wett">Wettbewerb (Fortschrittspunkte)</option><option value="ohne">Ohne Wertung</option></select></label></div>
     <div class="row"><label>Klassenziel <select id="selGoal"><option value="piste">Rennstrecke</option><option value="wiese">Blumenwiese</option></select></label>
       <label>Dauer <select id="selDur"><option value="60">1 Min. (Test)</option><option value="180">3 Min.</option><option value="300">5 Min.</option><option value="480">8 Min.</option><option value="600">10 Min.</option><option value="900">15 Min.</option></select></label></div>
-    <div class="row"><button class="btn" id="btnStop">■ Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
+    <div class="row"><button class="btn" id="btnStop"><i data-ic="stop"></i> Runde beenden</button><button class="btn" id="btnLobby">Zurück zur Lobby</button></div>
     <hr style="border:0;border-top:2px solid var(--line);width:100%">
     <div><b>Lehrer-Gerät (freiwillig)</b><p class="muted small" style="margin:4px 0 0">Für die echten Namen der Kinder, eine Sicherung der Lernstände und die Steuerung vom Platz aus. Zum Spielen wird es nicht gebraucht.</p></div>
-    <div class="row"><button class="btn" id="btnPair2">👩‍🏫 Lehrer-Gerät verbinden</button><span class="small muted" id="teachTag"></span></div>
+    <div class="row"><button class="btn" id="btnPair2"><i data-ic="person"></i> Lehrer-Gerät verbinden</button><span class="small muted" id="teachTag"></span></div>
     <div class="row"><button class="btn small" id="btnNewRoom">Neuen Raum anlegen</button><button class="btn small" id="btnFull">Vollbild</button><a class="btn small" href="index.html?wechseln">Gerät ändern</a></div>
   </div>
 </div>
@@ -114,11 +114,11 @@
 
 <script src="lib/peerjs.min.js"></script>
 <script src="lib/qrcode.js"></script>
-<script src="js/common.js?v=4"></script>
+<script src="js/common.js?v=5"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/skills.js?v=4"></script>
+<script src="js/skills.js?v=5"></script>
 <script src="js/engine.js?v=2"></script>
-<script src="js/kidsettings.js?v=2"></script>
-<script src="js/tafel.js?v=8"></script>
+<script src="js/kidsettings.js?v=3"></script>
+<script src="js/tafel.js?v=9"></script>
 </body>
 </html>

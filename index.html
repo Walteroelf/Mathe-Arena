@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-title" content="Mathe-Arena">
 <title>Mathe-Arena</title>
 <link rel="stylesheet" href="design.css?v=3">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body class="theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -18,8 +18,8 @@
   <h2 style="margin-top:28px">Was ist dieses Gerät?</h2>
   <p class="muted" style="margin-top:0">Einmal antippen. Das Gerät merkt sich die Wahl, beim nächsten Mal geht es sofort los.</p>
   <div class="tiles">
-    <a class="tile" id="lTafel" href="tafel.html" data-role="tafel"><div class="ic">📺</div><h2>Tafel</h2><div class="muted">Hier spielen alle zusammen. Zeigt den QR-Code und das Spiel.</div></a>
-    <a class="tile" id="lSchueler" href="schueler.html" data-role="schueler"><div class="ic">📱</div><h2>iPad</h2><div class="muted">Hier rechnet ein Kind. Mit Tippen, Taster oder Blick.</div></a>
+    <a class="tile" id="lTafel" href="tafel.html" data-role="tafel"><div class="ic"><i data-ic="tv"></i></div><h2>Tafel</h2><div class="muted">Hier spielen alle zusammen. Zeigt den QR-Code und das Spiel.</div></a>
+    <a class="tile" id="lSchueler" href="schueler.html" data-role="schueler"><div class="ic"><i data-ic="tablet"></i></div><h2>iPad</h2><div class="muted">Hier rechnet ein Kind. Mit Tippen, Taster oder Blick.</div></a>
   </div>
 
   <div class="card">
@@ -34,7 +34,7 @@
   <details style="margin-top:18px">
     <summary><b>Freiwillig: Lehrer-Gerät</b></summary>
     <p class="muted">Für die echten Namen der Kinder, eine Sicherung der Lernstände und die Steuerung vom Platz aus. Zum Spielen wird es nicht gebraucht. Auf iPad, Mac oder Windows-Rechner öffnen.</p>
-    <a class="btn" id="lLehrer" href="lehrer.html" data-role="lehrer">🧑‍🏫 Lehrer-Gerät öffnen</a>
+    <a class="btn" id="lLehrer" href="lehrer.html" data-role="lehrer"><i data-ic="person"></i> Lehrer-Gerät öffnen</a>
   </details>
 
   <p class="small muted" style="margin-top:22px">Tipp: Auf dem iPad „Teilen → Zum Home-Bildschirm“ wählen. Das gibt Vollbild, und die gespeicherten Daten bleiben besser erhalten.</p>
@@ -42,7 +42,7 @@
   <p class="small muted">Testbetrieb ohne Internet (alle Seiten im selben Browser): <a id="lTest" href="tafel.html?net=bc">Tafel mit ?net=bc öffnen</a>, danach Lehrer und Schüler ebenfalls mit <code>?net=bc</code>. Version <span id="ver"></span></p>
   <p class="small muted" id="roleLine"></p>
 </div>
-<script src="js/common.js?v=4"></script>
+<script src="js/common.js?v=5"></script>
 <script>
   document.getElementById('ver').textContent = MR.VERSION;
   var PAGES = { tafel: 'tafel.html', schueler: 'schueler.html', lehrer: 'lehrer.html' };

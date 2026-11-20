@@ -2,14 +2,14 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Mathe-Arena">
 <meta name="theme-color" content="#4DB2E6">
 <title>Mathe-Arena · iPad</title>
 <link rel="stylesheet" href="design.css?v=3">
-<link rel="stylesheet" href="css/style.css?v=12">
+<link rel="stylesheet" href="css/style.css?v=13">
 </head>
 <body class="student theme-jugend">
 <div class="band" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
@@ -17,9 +17,9 @@
   <span class="name" id="tbName">Mathe-Arena</span>
   <span class="small muted" id="tbConn"></span>
   <span class="pts" id="tbPts"></span>
-  <button class="btn small" id="gearBtn" aria-label="Einstellungen, 1 Sekunde gedrückt halten">⚙</button>
+  <button class="btn small" id="gearBtn" aria-label="Einstellungen, 1 Sekunde gedrückt halten"><i data-ic="gear"></i></button>
 </div>
-<div class="timebar" id="timebar" style="display:none"><i id="timefill"></i></div>
+<div class="timebar" id="timebar" style="display:none"><i id="timefill" class="bewegung-erlaubt"></i></div>
 
 <section class="screen center" id="scSetup">
   <h1>Wer bist du?</h1>
@@ -65,11 +65,11 @@
 <div class="settings hidden" id="settings"></div>
 
 <script src="lib/peerjs.min.js"></script>
-<script src="js/common.js?v=4"></script>
+<script src="js/common.js?v=5"></script>
 <script src="js/net.js?v=1"></script>
-<script src="js/skills.js?v=4"></script>
+<script src="js/skills.js?v=5"></script>
 <script src="js/engine.js?v=2"></script>
 <script src="js/input.js?v=1"></script>
-<script src="js/schueler.js?v=4"></script>
+<script src="js/schueler.js?v=5"></script>
 </body>
 </html>

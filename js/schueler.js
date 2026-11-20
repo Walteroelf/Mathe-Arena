@@ -53,7 +53,7 @@
   function updateTop() {
     $('#tbName').textContent = P ? P.name : 'Mathe-Arena';
     $('#tbPts').textContent = P && sess.phase === 'run' && sess.mode !== 'ohne' ? sess.pts + ' P.' : '';
-    $('#tbConn').textContent = link ? (linkOpen ? '● Tafel' : '○ verbinde …') : '';
+    $('#tbConn').innerHTML = link ? (linkOpen ? '<span class="dot ok"></span> Tafel' : '<span class="dot"></span> verbinde …') : '';
   }
   Sw.cfgFn = () => P && P.cfg;
 
@@ -296,7 +296,7 @@
 
   function renderPad(t) {
     const ans = $('#ans'); let val = '';
-    ans.innerHTML = `<div class="pad"><div class="padval" id="padval">&nbsp;</div><div class="padgrid">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button data-d="${d}">${d}</button>`).join('')}<button data-d="del">⌫</button><button data-d="0">0</button><button class="go" data-d="ok">✓</button></div></div>`;
+    ans.innerHTML = `<div class="pad"><div class="padval" id="padval">&nbsp;</div><div class="padgrid">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button data-d="${d}">${d}</button>`).join('')}<button data-d="del" aria-label="Löschen">${MR.icon('backspace')}</button><button data-d="0">0</button><button class="go" data-d="ok" aria-label="Fertig">${MR.icon('check')}</button></div></div>`;
     const pv = $('#padval');
     ans.querySelector('.padgrid').addEventListener('click', e => {
       const b = e.target.closest('button'); if (!b || locked) return;
@@ -338,7 +338,7 @@
     afterTask(t.strand === 's0' ? 1700 : (ok ? 900 : 2200) + (res.up ? 900 : 0));
   }
   function showUp(label) {
-    const b = document.createElement('div'); b.className = 'upBanner'; b.textContent = '⬆ Aufstieg: ' + label;
+    const b = document.createElement('div'); b.className = 'upBanner'; b.innerHTML = MR.icon('up') + ' Aufstieg: ' + MR.esc(label);
     $('#stage').appendChild(b); setTimeout(() => b.remove(), 2400);
   }
 
@@ -354,8 +354,8 @@
     const b = $('#bottombar'); const tap = P.cfg.input === 'tap';
     if (!tap) { b.innerHTML = ''; return; }
     let h = '';
-    if (P.cfg.hints && task && task.strand !== 's0') h += '<button class="btn" id="bHint">💡 Hilfe</button>';
-    h += '<button class="btn" id="bHelp">✋ Lehrkraft</button>';
+    if (P.cfg.hints && task && task.strand !== 's0') h += '<button class="btn" id="bHint">' + MR.icon('bulb') + ' Hilfe</button>';
+    h += '<button class="btn" id="bHelp">' + MR.icon('hand') + ' Lehrkraft</button>';
     if (sess.solo) h += '<button class="btn" id="bDone">Üben beenden</button>';
     b.innerHTML = h;
     const q = id => b.querySelector(id);
@@ -374,7 +374,7 @@
       const a = Math.random() * Math.PI * 2, d = 60 + Math.random() * Math.min(160, r.width / 2);
       p.style.setProperty('--dx', Math.cos(a) * d + 'px'); p.style.setProperty('--dy', Math.sin(a) * d + 'px');
       p.style.left = r.width / 2 + 'px'; p.style.top = r.height / 2 + 'px';
-      p.style.background = ['#ffd43b', '#ff6b6b', '#4dabf7', '#69db7c', '#e599f7'][i % 5];
+      p.style.background = ['#FFD100', '#F39200', '#4DB2E6', '#46A84A', '#A6D27A'][i % 5];
       host.appendChild(p); setTimeout(() => p.remove(), 950);
     }
   }
@@ -397,14 +397,14 @@
     const say = $('#say'); if (say) say.textContent = MR.pick(PRAISE);
     finishTask(t, res, true);
   }
-  const COIN = '<svg class="coin" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#ffd200" stroke="#c76f0a" stroke-width="6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#c76f0a" stroke-width="4"/><text x="50" y="63" text-anchor="middle" font-size="38" font-weight="700" fill="#c76f0a">€</text></svg>';
-  const BAG = '<svg class="bag" viewBox="0 0 120 120"><path d="M36 40 L84 40 Q114 72 100 102 Q60 118 20 102 Q6 72 36 40Z" fill="#f39325" stroke="#c76f0a" stroke-width="5"/><path d="M38 40 Q60 22 82 40" fill="none" stroke="#c76f0a" stroke-width="6" stroke-linecap="round"/><text x="60" y="90" text-anchor="middle" font-size="34" font-weight="700" fill="#1d3a5c">€</text></svg>';
+  const COIN = '<svg class="coin" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="#FFD100" stroke="#0D2B4E" stroke-width="5"/><circle cx="50" cy="50" r="30" fill="none" stroke="#0D2B4E" stroke-width="3"/><text x="50" y="63" text-anchor="middle" font-size="38" fill="#0D2B4E">€</text></svg>';
+  const BAG = '<svg class="bag" viewBox="0 0 120 120"><path d="M36 40 L84 40 Q114 72 100 102 Q60 118 20 102 Q6 72 36 40Z" fill="#F39200" stroke="#0D2B4E" stroke-width="5"/><path d="M38 40 Q60 22 82 40" fill="none" stroke="#0D2B4E" stroke-width="6" stroke-linecap="round"/><text x="60" y="90" text-anchor="middle" font-size="34"  fill="#1d3a5c">€</text></svg>';
 
   /* ---------- Zählen und Tippen ---------- */
   function renderTapCount(t) {
     const st = $('#stage');
     const items = t.pos.map((p, i) => `<g class="tcItem"><circle cx="${p.x}" cy="${p.y}" r="8.5"/><text x="${p.x}" y="${p.y + 3.6}" text-anchor="middle"></text></g>`).join('');
-    st.innerHTML = `<div class="tc"><div class="say" id="say">${MR.esc(t.q)}</div><div class="tcItems"><svg viewBox="0 0 100 ${t.n > 5 ? 66 : 62}" class="tcSvg">${items}</svg></div><div class="tcNum" id="tcNum">0</div><div class="muted" id="tcHint" style="min-height:1.4em"></div>${t.confirm ? '<button class="btn good huge" id="tcDone">✓ Fertig</button>' : ''}</div>`;
+    st.innerHTML = `<div class="tc"><div class="say" id="say">${MR.esc(t.q)}</div><div class="tcItems"><svg viewBox="0 0 100 ${t.n > 5 ? 66 : 62}" class="tcSvg">${items}</svg></div><div class="tcNum" id="tcNum">0</div><div class="muted" id="tcHint" style="min-height:1.4em"></div>${t.confirm ? '<button class="btn good huge" id="tcDone">' + MR.icon('check') + ' Fertig</button>' : ''}</div>`;
     if (P.cfg.speak) speak(t.speak);
     const els = [...st.querySelectorAll('.tcItem')];
     let taps = 0, done = false;
@@ -431,7 +431,7 @@
   function renderTrace(t) {
     const st = $('#stage'), digits = t.text.split('');
     const GW = digits.length * 100 + (digits.length - 1) * 22, GH = 140;
-    st.innerHTML = `<div class="tr"><div class="say" id="say">${MR.esc(t.q)}</div><div class="trWrap"><canvas id="trc" style="aspect-ratio:${GW}/${GH};width:min(90vw,calc(52vh*${(GW / GH).toFixed(3)}))"></canvas></div><button class="btn" id="trAgain">↺ Nochmal</button></div>`;
+    st.innerHTML = `<div class="tr"><div class="say" id="say">${MR.esc(t.q)}</div><div class="trWrap"><canvas id="trc" style="aspect-ratio:${GW}/${GH};width:min(90vw,calc(52vh*${(GW / GH).toFixed(3)}))"></canvas></div><button class="btn" id="trAgain">${MR.icon('refresh')} Nochmal</button></div>`;
     if (P.cfg.speak) speak(t.speak);
     const cv = $('#trc'), ctx = cv.getContext('2d');
     const strokes = [];     // { pts:[[x,y]], first:[x,y], label }
@@ -463,11 +463,12 @@
       ink.forEach(l => { ctx.beginPath(); l.forEach(([x, y], i) => i ? ctx.lineTo(x * k, y * k) : ctx.moveTo(x * k, y * k)); ctx.stroke(); if (l.length === 1) { ctx.fillStyle = css('--accent'); ctx.beginPath(); ctx.arc(l[0][0] * k, l[0][1] * k, 4 * k, 0, 7); ctx.fill(); } });
       strokes.forEach(sk => {                                                                       // Startpunkte
         const [x, y] = sk.pts[0]; ctx.fillStyle = css('--orange'); ctx.beginPath(); ctx.arc(x * k, y * k, 11 * k, 0, 7); ctx.fill();
-        ctx.fillStyle = '#1d3a5c'; ctx.font = `700 ${14 * k}px sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(sk.label || '▶', x * k, y * k + 1 * k);
+        ctx.fillStyle = css('--dunkelblau'); ctx.font = `${14 * k}px Andika, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        if (sk.label) ctx.fillText(sk.label, x * k, y * k + 1 * k); else { ctx.beginPath(); ctx.moveTo((x - 3) * k, (y - 5) * k); ctx.lineTo((x + 5) * k, y * k); ctx.lineTo((x - 3) * k, (y + 5) * k); ctx.closePath(); ctx.fill(); }
       });
       if (hintAt && performance.now() - hintAt < 4000) {                                             // Hilfe: wandernder Punkt
         const f = ((performance.now() - hintAt) % 2000) / 2000, g = guide[Math.min(guide.length - 1, Math.floor(f * guide.length))];
-        ctx.fillStyle = css('--gelb'); ctx.strokeStyle = '#1d3a5c'; ctx.lineWidth = 3 * k; ctx.beginPath(); ctx.arc(g.x * k, g.y * k, 12 * k, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = css('--gelb'); ctx.strokeStyle = css('--dunkelblau'); ctx.lineWidth = 3 * k; ctx.beginPath(); ctx.arc(g.x * k, g.y * k, 12 * k, 0, 7); ctx.fill(); ctx.stroke();
       }
     }
     (function loop() { if (!alive) return; if (dirty || (hintAt && performance.now() - hintAt < 4200)) { draw(); dirty = false; } requestAnimationFrame(loop); })();
@@ -578,7 +579,7 @@
     $('#settings').innerHTML = `<div class="inner">
       <div class="row"><h2 class="grow">Einstellungen · ${MR.esc(P.name)}</h2><button class="btn primary" data-act="close">Fertig</button></div>
       <div class="card"><h3>Wie antwortest du?</h3>
-        ${seg('input', c.input, [['tap', '👆 Tippen'], ['switch', '🔘 Taster'], ['gaze', '👁 Blick']])}
+        ${seg('input', c.input, [['tap', MR.icon('finger') + ' Tippen'], ['switch', MR.icon('button') + ' Taster'], ['gaze', MR.icon('eye') + ' Blick']])}
         <p class="muted small">Tippen: Finger. Taster: Schalter, iSwitch oder Leertaste/Enter. Blick: Augensteuerung, Verweilen wählt.</p>
         <label class="chk"><input type="checkbox" data-chk="screenTap" ${c.screenTap ? 'checked' : ''}> Bildschirm antippen zählt auch</label>
       </div>
@@ -613,7 +614,7 @@
       <div class="card"><h3>Verbindung</h3>
         <div class="row"><input id="setRoom" maxlength="4" value="${MR.esc(room)}" style="width:6em;text-transform:uppercase;letter-spacing:.15em">
           <button class="btn" data-act="reconnect">Verbinden</button>
-          <span class="small muted">${linkOpen ? '● verbunden' : '○ nicht verbunden'}</span></div>
+          <span class="small muted">${linkOpen ? '<span class="dot ok"></span> verbunden' : '<span class="dot"></span> nicht verbunden'}</span></div>
       </div>
       <div class="card"><h3>Mein Profil</h3>
         <p class="small muted">Dein Lernstand liegt auf diesem iPad. Eine Kopie bekommt die Lehrkraft. Du kannst ihn auch als Datei sichern.</p>
@@ -625,7 +626,7 @@
   function testKey(key, down, status) {
     const box = $('#testbox'), dot = $('#testdot'), tx = $('#testtext'); if (!box) return;
     dot.classList.toggle('down', down);
-    if (down) tx.textContent = 'Angekommen: ' + MR.Input.keyLabel(key) + (status === 'select' ? ' ✓ zählt als Taster 1' : status === 'next' ? ' ✓ zählt als Taster 2 (Weiter)' : ' – zählt im Moment nicht');
+    if (down) tx.textContent = 'Angekommen: ' + MR.Input.keyLabel(key) + (status === 'select' ? ': zählt als Taster 1' : status === 'next' ? ': zählt als Taster 2 (Weiter)' : ': zählt im Moment nicht');
   }
   function learn(slot) {
     const box = $('#testbox'), tx = $('#testtext'); if (!box) return;

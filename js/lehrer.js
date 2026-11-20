@@ -29,7 +29,7 @@
     unlocked = false; $('#app').classList.add('hidden'); $('#gate').classList.remove('hidden');
     const g = $('#gate');
     if (T.pin) {
-      g.innerHTML = `<h1>🔒 Lehrer</h1><p class="muted">Bitte PIN eingeben.</p>
+      g.innerHTML = `<h1>${MR.icon('lock')} Lehrer</h1><p class="muted">Bitte PIN eingeben.</p>
         <div class="row"><input id="gPin" type="password" inputmode="numeric" maxlength="6" autocomplete="off" style="font-size:1.6rem;width:8em;text-align:center"><button class="btn primary" id="gGo">Öffnen</button></div>
         <p id="gMsg" class="small" style="color:var(--bad)"></p>`;
       const go = async () => { if (await checkPin($('#gPin').value.trim())) unlock(); else { $('#gMsg').textContent = 'PIN stimmt nicht.'; $('#gPin').value = ''; } };
@@ -99,7 +99,7 @@
     if (!d || typeof d !== 'object') return;
     switch (d.k) {
       case 'auth':
-        authed = !!d.ok; pairError = d.ok ? '' : 'Der Kopplungscode passt nicht zur Tafel. An der Tafel ⚙ → neuen Code ablesen.';
+        authed = !!d.ok; pairError = d.ok ? '' : 'Der Kopplungscode passt nicht zur Tafel. An der Tafel im Menü einen neuen Code ablesen.';
         renderBar(); renderRunde(); break;
       case 'roster': live = d; liveAt = Date.now(); renderRunde(); if (tab === 'klasse') renderKlasse(); break;
       case 'prof': onProf(d.id, d.profile); break;
@@ -180,7 +180,7 @@
         <div class="tk">${MR.esc(s.task || '–')}</div>
         <div class="small muted">${MR.esc(a.t)} · Serie ${p.streak || 0} · ${p.pts} P. · ${p.ok}/${p.tot} richtig</div>
         <div class="lv">${lv}</div>
-        <div class="row"><button class="btn small" data-kid="${p.id}">⚙ Einstellungen</button><button class="btn small" data-hint="${p.id}">💡 Hilfe zeigen</button></div></div>`;
+        <div class="row"><button class="btn small" data-kid="${p.id}">${MR.icon('gear')} Einstellungen</button><button class="btn small" data-hint="${p.id}">${MR.icon('bulb')} Hilfe zeigen</button></div></div>`;
     }).join('') + '</div>';
     if (!list.length) h += `<div class="card"><h3 style="margin-top:0">Kinder verbinden</h3><p>Noch keine iPads verbunden. Die Kinder öffnen auf dem iPad <code>${MR.esc(schuelerUrl)}</code> und scannen den QR-Code an der Tafel (oder tippen den 4-stelligen Code ein). Ab dem zweiten Mal verbindet sich das iPad von selbst.</p></div>`;
     $('#liveBox').innerHTML = h;
@@ -209,7 +209,7 @@
         return `<tr><td><input data-label="${k.id}" value="${MR.esc(k.label)}" placeholder="Name eintragen" style="width:11em"></td>
           <td>${onl.has(k.id) ? '<span class="dot ok"></span> ' : ''}${MR.esc(k.name)}</td><td><div class="lv">${lv}</div></td>
           <td class="small">${te ? MR.esc(E.TAG_NAMES[te.tag] || te.tag) : ''}</td><td class="small">${MR.fmtDate(k.seen)}</td>
-          <td><button class="btn small" data-kid="${k.id}">⚙</button></td></tr>`;
+          <td><button class="btn small" data-kid="${k.id}" aria-label="Einstellungen">${MR.icon('gear')}</button></td></tr>`;
       }).join('')}</table></div>
       ${kids.length ? '' : '<p class="muted">Sobald sich ein iPad verbindet, erscheint hier das Kind.</p>'}</div>`;
     // Nicht neu zeichnen, solange jemand tippt oder nichts neu ist (sonst springt die Eingabe weg)
